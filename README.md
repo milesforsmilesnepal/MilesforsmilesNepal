@@ -1,14 +1,14 @@
 # Miles for Smiles Nepal | मुस्कानको लागि पाइला नेपाल
 
 > **Tagline:** Reach the Unreached · हर नेपालीको स्वस्थ मुस्कान  
-> **Official Website:** [https://milesforsmilesnepal.org](https://milesforsmilesnepal.org)  
-> **Registration:** Social Welfare Council Nepal Affiliation No: 53120 | DAO Kathmandu Reg: 58492/080  
+> **Official Website:** [https://milesforsmilesnepal.org.np](https://milesforsmilesnepal.org.np)  
+> **Registration:** Social Welfare Council Nepal Affiliation No: 53120 | DAO Kathmandu Reg: 55
 
 ---
 
 ## 🌟 About the Organization
 
-**Miles for Smiles Nepal** is a youth-led nonprofit organization founded by dental students dedicated to eradicating oral disease, relieving agonizing toothaches, and expanding healthcare access to underserved and remote communities across Nepal.
+**Miles for Smiles Nepal** is a youth-led non government organization founded by dental students dedicated to eradicating oral disease, relieving agonizing toothaches, and expanding healthcare access to underserved and remote communities across Nepal.
 
 Over 90% of dental professionals in Nepal practice in urban centers, while 80% of families in remote mountain districts have never visited a dentist. Miles for Smiles bridges this gap by organizing student-led high-altitude medical caravans with portable dental equipment.
 
@@ -20,8 +20,8 @@ Over 90% of dental professionals in Nepal practice in urban centers, while 80% o
 - **Disaster & Humanitarian Outreach:** Monsoon flood relief health camps, antiseptic oral rinses, and waterborne disease prevention.
 
 ### Documented Impact:
-- **6,136+** Students Screened & Educated
-- **14+** Remote Districts Served (Jumla, Humla, Sindhupalchok, Solukhumbu, Chitwan, Morang, etc.)
+- **6,486+** Students Screened & Educated
+- **15+** Remote Districts Served (Jumla, Humla, Sindhupalchok, Solukhumbu, Chitwan, Morang, etc.)
 - **18,500+** Oral Hygiene Packs Distributed
 - **1,420+** Free Dental Restorations & Interventions Completed
 - **460+** Youth Volunteers Mobilized
