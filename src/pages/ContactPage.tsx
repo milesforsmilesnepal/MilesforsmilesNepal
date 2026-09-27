@@ -1,391 +1,317 @@
 import React, { useState } from 'react';
-import { PageId } from '../types';
+import { supabase } from '../lib/supabase';
+import { PageHeader } from '../components/PageHeader';
+import { SectionHeader } from '../components/SectionHeader';
 import {
-  MapPin,
-  Phone,
   Mail,
-  Clock,
+  Phone,
+  MapPin,
+  MessageCircle,
+  Facebook,
+  Instagram,
+  Youtube,
+  Twitter,
   Send,
   CheckCircle2,
-  Building,
-  School,
-  Sparkles,
+  HelpCircle,
+  ChevronDown,
 } from 'lucide-react';
 
-interface ContactPageProps {
-  onNavigate: (page: PageId) => void;
-}
+const FAQS = [
+  {
+    q: 'Who can volunteer with Miles for Smiles Nepal?',
+    a: 'We welcome dental students, qualified dentists, nurses, doctors, photographers, content creators, and enthusiastic general volunteers who want to help with camp logistics and children education.',
+  },
+  {
+    q: 'How are donations utilized?',
+    a: '100% of public donations directly fund field clinics, purchase sterile restorative filling materials, supply oral hygiene kits to remote schools, and cover rough terrain transport in mountain districts.',
+  },
+  {
+    q: 'Can organizations or dental colleges partner on camps?',
+    a: 'Yes! We actively collaborate with dental colleges, hospital departments, youth clubs, municipalities, and corporate CSR partners across all seven provinces of Nepal.',
+  },
+  {
+    q: 'Are dental treatments completely free for patients?',
+    a: 'Yes, every screening, restorative filling, extraction, topical fluoride application, and hygiene kit provided during our camps is 100% free of charge to community members.',
+  },
+];
 
-export const ContactPage: React.FC<ContactPageProps> = ({ onNavigate }) => {
-  const [activeTab, setActiveTab] = useState<'general' | 'camp-request'>('general');
-
-  // General contact form state
-  const [contactData, setContactData] = useState({
-    name: '',
+export const ContactPage: React.FC = () => {
+  const [formData, setFormData] = useState({
+    full_name: '',
     email: '',
     phone: '',
-    subject: 'General Inquiry',
+    subject: '',
     message: '',
   });
-  const [contactSubmitted, setContactSubmitted] = useState(false);
 
-  // Camp request form state
-  const [campData, setCampData] = useState({
-    requesterName: '',
-    designation: 'School Principal',
-    organization: '',
-    district: '',
-    municipalityWard: '',
-    estimatedStudents: '',
-    nearestRoadAccess: '',
-    urgencyReason: '',
-  });
-  const [campSubmitted, setCampSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const handleContactSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setContactSubmitted(true);
-    setTimeout(() => {
-      setContactSubmitted(false);
-      setContactData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: 'General Inquiry',
-        message: '',
-      });
-    }, 6000);
-  };
+    setLoading(true);
 
-  const handleCampSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCampSubmitted(true);
-    setTimeout(() => {
-      setCampSubmitted(false);
-      setCampData({
-        requesterName: '',
-        designation: 'School Principal',
-        organization: '',
-        district: '',
-        municipalityWard: '',
-        estimatedStudents: '',
-        nearestRoadAccess: '',
-        urgencyReason: '',
-      });
-    }, 6000);
+    try {
+      await supabase.from('contact_messages').insert(formData);
+      setSubmitted(true);
+    } catch {
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-14">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100">
-          <Mail className="w-3.5 h-3.5 text-[#16A396]" />
-          <span>Connect With Us · सम्पर्क</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-          Get in Touch
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 font-nepali">
-          मुस्कानको लागि पाइला नेपालको केन्द्रीय सचिवालय, काठमाडौं वा सिधै गाउँमा शिविर अनुरोध गर्नुहोस्।
-        </p>
-      </div>
+    <div>
+      <PageHeader
+        devanagariTitle="सम्पर्क"
+        title="Get in Touch"
+        subtitle="Have a question, feedback, or want to collaborate with our youth movement? We'd love to hear from you. Reach out and join the mission."
+        breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Contact' }]}
+        bgImage="https://images.pexels.com/photos/2095948/pexels-photo-2095948.jpeg?auto=compress&cs=tinysrgb&w=1920"
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        {/* Left Column: Contact Details & Secretariat Information */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl space-y-6 shadow-md">
-            <div>
-              <span className="text-xs font-bold text-[#38C8BA] uppercase tracking-wider">
-                Central Secretariat
-              </span>
-              <h3 className="text-xl font-bold text-white mt-1">Miles for Smiles Nepal</h3>
-              <p className="text-xs text-slate-300 font-nepali mt-0.5">मुस्कानको लागि पाइला नेपाल</p>
-            </div>
-
-            <div className="space-y-4 text-xs sm:text-sm">
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#38C8BA] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-white block">Headquarters:</strong>
-                  <span className="text-slate-300">
-                    Maharajgunj (near TU Teaching Hospital), Kathmandu, Nepal
-                  </span>
+      <section className="section-padding">
+        <div className="container-app">
+          <div className="grid gap-10 lg:grid-cols-3">
+            {/* 1. Contact Information Column */}
+            <div className="space-y-6">
+              <div className="rounded-3xl bg-white p-7 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-[#1AAE9F] dark:bg-slate-700 dark:text-teal-300">
+                  <Mail className="h-6 w-6" />
                 </div>
+                <h3 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
+                  Email Us
+                </h3>
+                <a
+                  href="mailto:info@milesforsmilesnepal.org"
+                  className="mt-2 block text-sm font-semibold text-[#1AAE9F] hover:text-[#0f7069] break-all"
+                >
+                  info@milesforsmilesnepal.org
+                </a>
               </div>
 
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#38C8BA] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-white block">Direct Telephone:</strong>
-                  <span className="text-slate-300">+977 1 4543209</span>
-                  <span className="block text-slate-400 text-xs">Mobile / WhatsApp: +977 9841000000</span>
+              <div className="rounded-3xl bg-white p-7 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-slate-700 dark:text-emerald-400">
+                  <Phone className="h-6 w-6" />
                 </div>
+                <h3 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
+                  Call Us
+                </h3>
+                <a
+                  href="tel:+9779800000000"
+                  className="mt-2 block text-sm font-semibold text-[#1AAE9F] hover:text-[#0f7069]"
+                >
+                  +977 9800000000
+                </a>
               </div>
 
-              <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#38C8BA] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-white block">Electronic Correspondence:</strong>
-                  <span className="text-slate-300">contact@milesforsmilesnepal.org</span>
-                  <span className="block text-slate-400 text-xs">volunteer@milesforsmilesnepal.org</span>
+              <div className="rounded-3xl bg-white p-7 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 dark:bg-slate-700 dark:text-amber-400">
+                  <MapPin className="h-6 w-6" />
                 </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <Clock className="w-5 h-5 text-[#38C8BA] shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-white block">Secretariat Office Hours:</strong>
-                  <span className="text-slate-300">Sunday - Friday: 10:00 AM - 5:00 PM NPT</span>
-                  <span className="block text-slate-400 text-xs">Emergency Field Response: 24/7 on call</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-800 text-xs text-slate-400">
-              Registration No: <strong>58492/080</strong> · Social Welfare Council Affiliation: <strong>53120</strong>
-            </div>
-          </div>
-
-          {/* Quick FAQ / Camp Notice */}
-          <div className="bg-teal-50 p-6 rounded-3xl border border-teal-100 space-y-2 text-xs">
-            <div className="flex items-center gap-1.5 font-bold text-[#16A396]">
-              <Sparkles className="w-4 h-4 text-[#F4C542]" />
-              <span>Camp Planning Timeline</span>
-            </div>
-            <p className="text-slate-700 leading-relaxed">
-              We schedule high-altitude expeditions two to three months in advance to align volunteer doctors, local government permissions, and air/porter transport.
-            </p>
-          </div>
-        </div>
-
-        {/* Right Column: Interactive Tabs for General Message or Camp Request */}
-        <div className="lg:col-span-7 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xs">
-          {/* Tab buttons */}
-          <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl mb-6">
-            <button
-              onClick={() => setActiveTab('general')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
-                activeTab === 'general'
-                  ? 'bg-white text-[#16A396] shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              General Message
-            </button>
-            <button
-              onClick={() => setActiveTab('camp-request')}
-              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'camp-request'
-                  ? 'bg-[#16A396] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <School className="w-3.5 h-3.5" />
-              <span>Request Dental Camp for Your Village</span>
-            </button>
-          </div>
-
-          {activeTab === 'general' ? (
-            contactSubmitted ? (
-              <div className="p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-3">
-                <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-                <h4 className="text-base font-bold text-slate-900">Message Delivered</h4>
-                <p className="text-xs text-slate-600 max-w-sm mx-auto">
-                  Thank you for reaching out. A representative from our communications team will respond to your email within 24 hours.
+                <h3 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
+                  Visit Us
+                </h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  Kathmandu, Bagmati Province, Nepal
                 </p>
               </div>
-            ) : (
-              <form onSubmit={handleContactSubmit} className="space-y-4 text-xs sm:text-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Your Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={contactData.name}
-                      onChange={(e) => setContactData({ ...contactData, name: e.target.value })}
-                      placeholder="e.g., Suman Thapa"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                    />
-                  </div>
 
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      value={contactData.email}
-                      onChange={(e) => setContactData({ ...contactData, email: e.target.value })}
-                      placeholder="e.g., suman@example.com"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={contactData.phone}
-                      onChange={(e) => setContactData({ ...contactData, phone: e.target.value })}
-                      placeholder="e.g., +977 9841000000"
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block font-semibold text-slate-700 mb-1">Subject</label>
-                    <select
-                      value={contactData.subject}
-                      onChange={(e) => setContactData({ ...contactData, subject: e.target.value })}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                    >
-                      <option value="General Inquiry">General Inquiry</option>
-                      <option value="Media & Press Interview">Media & Press Interview</option>
-                      <option value="Donation & Receipt Confirmation">Donation & Receipt Confirmation</option>
-                      <option value="Volunteer Query">Volunteer Query</option>
-                      <option value="Academic Collaboration">Academic Collaboration</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Your Message *</label>
-                  <textarea
-                    required
-                    rows={4}
-                    value={contactData.message}
-                    onChange={(e) => setContactData({ ...contactData, message: e.target.value })}
-                    placeholder="How can we assist you or collaborate?"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="px-8 py-3 bg-[#16A396] hover:bg-[#0E786E] text-white font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Send Message</span>
-                </button>
-              </form>
-            )
-          ) : campSubmitted ? (
-            <div className="p-8 bg-emerald-50 rounded-2xl border border-emerald-200 text-center space-y-3">
-              <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-              <h4 className="text-base font-bold text-slate-900">Camp Request Logged</h4>
-              <p className="text-xs text-slate-600 max-w-sm mx-auto">
-                Your village/school camp request has been routed to our Expeditions Director. We will evaluate geographical access and reach out to local health representatives.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleCampSubmit} className="space-y-4 text-xs sm:text-sm">
-              <div className="p-3 bg-teal-50 rounded-xl border border-teal-100 text-xs text-[#16A396]">
-                <strong>For Community Leaders:</strong> Use this form if you are a rural school headmaster, ward official, or health post in-charge in an underserved district.
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Requester Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={campData.requesterName}
-                    onChange={(e) => setCampData({ ...campData, requesterName: e.target.value })}
-                    placeholder="e.g., Kalsang Gurung"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Your Role / Designation *</label>
-                  <select
-                    value={campData.designation}
-                    onChange={(e) => setCampData({ ...campData, designation: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  >
-                    <option value="School Principal">School Headmaster / Principal</option>
-                    <option value="Ward Chairperson">Ward Chairperson / Local Official</option>
-                    <option value="Health Post In-Charge">Health Post In-Charge / Nurse</option>
-                    <option value="Youth Club Leader">Community Youth Club Leader</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">District *</label>
-                  <input
-                    type="text"
-                    required
-                    value={campData.district}
-                    onChange={(e) => setCampData({ ...campData, district: e.target.value })}
-                    placeholder="e.g., Jumla, Ramechhap, Kalikot"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Municipality & Ward</label>
-                  <input
-                    type="text"
-                    value={campData.municipalityWard}
-                    onChange={(e) => setCampData({ ...campData, municipalityWard: e.target.value })}
-                    placeholder="e.g., Tatopani Rural Municipality Ward 4"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Estimated Students / People</label>
-                  <input
-                    type="number"
-                    value={campData.estimatedStudents}
-                    onChange={(e) => setCampData({ ...campData, estimatedStudents: e.target.value })}
-                    placeholder="e.g., 350"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Nearest Road / Walk Time</label>
-                  <input
-                    type="text"
-                    value={campData.nearestRoadAccess}
-                    onChange={(e) => setCampData({ ...campData, nearestRoadAccess: e.target.value })}
-                    placeholder="e.g., 4 hours trek from dirt road end"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Oral Health Situation & Need *</label>
-                <textarea
-                  required
-                  rows={3}
-                  value={campData.urgencyReason}
-                  onChange={(e) => setCampData({ ...campData, urgencyReason: e.target.value })}
-                  placeholder="Describe the current dental pain, lack of toothbrushes, or health challenges in your community..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="px-8 py-3 bg-[#16A396] hover:bg-[#0E786E] text-white font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2 cursor-pointer"
+              <a
+                href="https://wa.me/9779800000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2.5 rounded-3xl bg-[#25D366] p-6 font-bold text-white shadow-soft transition-all hover:bg-[#20ba5a]"
               >
-                <School className="w-4 h-4" />
-                <span>Submit Field Camp Request</span>
-              </button>
-            </form>
-          )}
+                <MessageCircle className="h-6 w-6" />
+                <span>Chat Directly on WhatsApp</span>
+              </a>
+
+              {/* Follow Us */}
+              <div className="rounded-3xl bg-white p-7 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Follow Our Movement
+                </h3>
+                <div className="mt-4 flex gap-3">
+                  {[
+                    { icon: Facebook, label: 'Facebook', url: 'https://facebook.com' },
+                    { icon: Instagram, label: 'Instagram', url: 'https://instagram.com' },
+                    { icon: Youtube, label: 'YouTube', url: 'https://youtube.com' },
+                    { icon: Twitter, label: 'Twitter', url: 'https://twitter.com' },
+                  ].map(({ icon: Icon, label, url }) => (
+                    <a
+                      key={label}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-all hover:bg-[#1AAE9F] hover:text-white dark:bg-slate-700 dark:text-slate-300"
+                    >
+                      <Icon className="h-5 w-5" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Contact Form Column */}
+            <div className="lg:col-span-2">
+              {submitted ? (
+                <div className="rounded-3xl bg-white p-10 text-center shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 animate-fade-in">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-6">
+                    <CheckCircle2 className="h-8 w-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                    Thank You for Reaching Out!
+                  </h3>
+                  <p className="mt-3 text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-md mx-auto">
+                    Your message has been delivered to our secretariat. A member of our coordination team will reply to your email within 24 to 48 hours.
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="rounded-3xl bg-white p-8 sm:p-10 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-6"
+                >
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                      Send Us a Message
+                    </h2>
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      Have a query, camp invitation, or media inquiry? Leave your details below.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label className="label-field">Full Name *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.full_name}
+                        onChange={(e) =>
+                          setFormData({ ...formData, full_name: e.target.value })
+                        }
+                        className="input-field"
+                        placeholder="Your full name"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label-field">Email Address *</label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) =>
+                          setFormData({ ...formData, email: e.target.value })
+                        }
+                        className="input-field"
+                        placeholder="you@example.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label className="label-field">Phone Number</label>
+                      <input
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) =>
+                          setFormData({ ...formData, phone: e.target.value })
+                        }
+                        className="input-field"
+                        placeholder="+977 98XXXXXXXX"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="label-field">Subject *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.subject}
+                        onChange={(e) =>
+                          setFormData({ ...formData, subject: e.target.value })
+                        }
+                        className="input-field"
+                        placeholder="e.g. Camp collaboration / Donation query"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="label-field">Your Message *</label>
+                    <textarea
+                      rows={5}
+                      required
+                      value={formData.message}
+                      onChange={(e) =>
+                        setFormData({ ...formData, message: e.target.value })
+                      }
+                      className="input-field"
+                      placeholder="Write your message here..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full justify-center text-base py-3.5"
+                  >
+                    <Send className="h-4 w-4" />
+                    <span>{loading ? 'Sending...' : 'Send Message'}</span>
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* 3. FAQ ACCORDION */}
+      <section className="section-padding bg-slate-50 dark:bg-slate-800/50">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Got Questions?"
+            title="Frequently Asked Questions"
+            subtitle="Answers to common questions about our dental outreach camps, volunteering, and operations."
+          />
+
+          <div className="mt-12 max-w-3xl mx-auto space-y-4">
+            {FAQS.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className="rounded-2xl bg-white shadow-sm dark:bg-slate-800 border border-slate-100 dark:border-slate-700 overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="flex w-full items-center justify-between p-6 text-left font-bold text-slate-900 dark:text-white cursor-pointer"
+                  >
+                    <span className="text-base sm:text-lg">{faq.q}</span>
+                    <ChevronDown
+                      className={`h-5 w-5 text-[#1AAE9F] transition-transform duration-200 flex-shrink-0 ${
+                        isOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-6 pb-6 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-4">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

@@ -2,24 +2,236 @@
 
 @layer base {
   :root {
-    --brand-primary: #16A396;
-    --brand-primary-dark: #0E786E;
-    --brand-secondary: #38C8BA;
-    --brand-accent: #F4C542;
-    --brand-bg: #F8FAFC;
-    --brand-text: #1E293B;
+    --brand-primary: #1AAE9F;
+    --brand-primary-hover: #148f84;
+    --brand-hope: #F4C542;
+    --brand-dental: #2dd4bf;
+    --surface-light: #F7FAFC;
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    color: #1E293B;
-    background-color: #F8FAFC;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
     overflow-x: hidden;
+  }
+
+  .dark body {
+    background-color: #0f172a;
+    color: #f1f5f9;
   }
 }
 
+.font-devanagari,
 .font-nepali {
   font-family: 'Noto Sans Devanagari', 'Kalimati', 'Kokila', sans-serif;
+}
+
+.font-display {
+  font-family: 'Poppins', 'Inter', sans-serif;
+}
+
+/* Custom Utilities matching Bolt Exactly */
+.glass {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.dark .glass {
+  background-color: rgba(15, 23, 42, 0.85);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: #1AAE9F;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  box-shadow: 0 2px 15px -3px rgba(26, 174, 159, 0.3), 0 10px 20px -2px rgba(26, 174, 159, 0.15);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background-color: #148f84;
+  transform: translateY(-1px);
+}
+
+.btn-hope {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: #F4C542;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: #472e00;
+  box-shadow: 0 2px 15px -3px rgba(244, 197, 66, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-hope:hover {
+  background-color: #eab308;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 2px solid #1AAE9F;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: #1AAE9F;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background-color: #1AAE9F;
+  color: #ffffff;
+}
+
+.btn-dental {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: #2dd4bf;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.btn-dental:hover {
+  background-color: #14b8a6;
+}
+
+.container-app {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 80rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .container-app {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container-app {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.section-padding {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 768px) {
+  .section-padding {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.shadow-card {
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-card-hover {
+  box-shadow: 0 16px 32px -6px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-soft {
+  box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.input-field {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  transition: all 0.2s ease;
+}
+.input-field:focus {
+  border-color: #1AAE9F;
+  background-color: #ffffff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 174, 159, 0.15);
+}
+.dark .input-field {
+  border-color: #334155;
+  background-color: #1e293b;
+  color: #ffffff;
+}
+.dark .input-field:focus {
+  background-color: #0f172a;
+}
+
+.label-field {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-bottom: 0.375rem;
+}
+.dark .label-field {
+  color: #94a3b8;
+}
+
+.bg-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-down {
+  animation: fadeInDown 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 /* Custom scrollbar */

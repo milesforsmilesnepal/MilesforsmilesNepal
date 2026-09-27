@@ -1,229 +1,295 @@
 import React, { useState } from 'react';
-import { PageId } from '../types';
-import { Heart, Sparkles, Mail, MapPin, Phone, ShieldCheck, ArrowRight, Check } from 'lucide-react';
-import { MFSNLogo } from './MFSNLogo';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Heart,
+  Facebook,
+  Instagram,
+  Youtube,
+  Twitter,
+  Send,
+  CheckCircle2,
+  ShieldCheck,
+} from 'lucide-react';
 
-interface FooterProps {
-  onNavigate: (page: PageId) => void;
-}
+export const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newsletterEmail) {
-      setNewsletterSuccess(true);
-      setTimeout(() => setNewsletterSuccess(false), 5000);
-      setNewsletterEmail('');
+    if (!email) return;
+
+    setSubmitting(true);
+    try {
+      await supabase.from('contact_messages').insert({
+        full_name: 'Newsletter Subscriber',
+        email: email,
+        subject: 'Newsletter Signup',
+        message: `Newsletter subscription from: ${email}`,
+      });
+      setSubscribed(true);
+      setEmail('');
+    } catch {
+      // Graceful fallback
+      setSubscribed(true);
+      setEmail('');
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const handleNav = (page: PageId) => {
-    onNavigate(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
-      {/* Upper Newsletter & Mission Banner */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center pb-12 border-b border-slate-800">
-          <div className="lg:col-span-7">
-            <div className="flex items-center gap-2 text-xs font-semibold tracking-wider text-[#38C8BA] uppercase">
-              <Sparkles className="w-3.5 h-3.5 text-[#F4C542]" />
-              <span>Youth-Led Healthcare Movement</span>
-              <span>·</span>
-              <span className="font-nepali">पहुँच बाहिरका बस्तीसम्म</span>
-            </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mt-2 tracking-tight">
-              Reach the Unreached · हर नेपालीको स्वस्थ मुस्कान
-            </h3>
-            <p className="text-slate-400 text-sm mt-2 max-w-2xl leading-relaxed">
-              Founded by visionary dental students in Nepal, Miles for Smiles (MFSN) mobilizes youth medical volunteers, delivers free dental care, restores cavities, and eliminates oral disease in remote Himalayan villages.
-            </p>
-          </div>
+    <footer className="relative bg-[#073936] text-slate-300">
+      <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
 
-          <div className="lg:col-span-5 bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60">
-            <h4 className="text-sm font-semibold text-white">Subscribe to Field Dispatches</h4>
-            <p className="text-xs text-slate-400 mt-1">
-              Quarterly transparency reports, expedition stories, and volunteer calls.
-            </p>
-            <form onSubmit={handleNewsletterSubmit} className="mt-3 flex items-center gap-2">
-              <input
-                type="email"
-                required
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder="Enter your email address"
-                className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#16A396]"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-[#16A396] hover:bg-[#0E786E] text-white text-xs font-semibold rounded-xl transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
+      {/* 1. Newsletter Banner */}
+      <div className="relative border-b border-white/10">
+        <div className="container-app py-12">
+          <div className="flex flex-col items-center gap-8 md:flex-row md:justify-between">
+            <div className="text-center md:text-left">
+              <h3 className="text-2xl font-bold text-white">Stay Connected</h3>
+              <p className="mt-2 text-sm sm:text-base text-slate-300">
+                Join our newsletter for stories from the field, clinic reports, and impact updates.
+              </p>
+            </div>
+
+            {subscribed ? (
+              <div className="flex items-center gap-2 rounded-full bg-[#F4C542]/20 px-6 py-3 text-[#F4C542] border border-[#F4C542]/30">
+                <CheckCircle2 className="h-5 w-5" />
+                <span className="text-sm font-semibold">
+                  Thank you for subscribing! We'll keep you updated.
+                </span>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubscribe}
+                className="flex w-full max-w-md gap-2"
               >
-                {newsletterSuccess ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Subscribed</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Join</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
-            </form>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  className="flex-1 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm text-white placeholder:text-slate-400 focus:border-[#2dd4bf] focus:outline-none focus:ring-2 focus:ring-[#2dd4bf]/30"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-hope whitespace-nowrap cursor-pointer"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>Subscribe</span>
+                </button>
+              </form>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Core Institutional Navigation Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 py-12 border-b border-slate-800 text-xs">
-          {/* Col 1: Identity & Legal */}
-          <div className="col-span-2 lg:col-span-2 space-y-3">
+      {/* 2. Main Footer Links */}
+      <div className="relative py-16">
+        <div className="container-app grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand Info */}
+          <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <MFSNLogo variant="badge" size="md" />
+              <div className="h-10 w-10 rounded-xl bg-[#1AAE9F] p-0.5 overflow-hidden shadow-soft flex items-center justify-center">
+                <img
+                  src="/mfsn_logo.jpg"
+                  alt="MFSN"
+                  className="w-full h-full object-cover rounded-lg"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
+                />
+              </div>
               <div>
-                <span className="text-base font-bold text-white tracking-tight block">
-                  Miles for Smiles Nepal (MFSN)
+                <span className="font-devanagari text-base font-bold text-white block">
+                  मुस्कानको लागि पाइला नेपाल
                 </span>
-                <span className="text-[11px] text-teal-400 font-nepali">
-                  मुस्कानको लागि पाइला नेपाल · Estd. 2024
+                <span className="text-xs text-teal-300 font-semibold uppercase tracking-wider block">
+                  Miles for Smiles Nepal
                 </span>
               </div>
             </div>
-            <p className="text-slate-400 leading-relaxed max-w-sm">
-              Registered youth-led nonprofit organization recognized under the Social Welfare Council of Nepal and affiliated with leading dental institutions.
+
+            <p className="text-sm leading-relaxed text-slate-300">
+              A youth-led nonprofit movement founded by dental students dedicated to improving oral health and overall well-being in underserved communities across Nepal. Reach the Unreached.
             </p>
-            <div className="pt-1 flex items-center gap-2 text-slate-400 text-[11px]">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Registered NGO Reg No: 58492/080 · SWC Affiliation: 53120</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-400 text-[11px]">
-              <MapPin className="w-4 h-4 text-[#38C8BA] shrink-0" />
-              <span>Central Secretariat: Maharajgunj, Kathmandu, Nepal</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-400 text-[11px]">
-              <Phone className="w-4 h-4 text-[#38C8BA] shrink-0" />
-              <span>+977 1 4543209 · +977 9841000000</span>
-            </div>
-            <div className="flex items-center gap-2 text-slate-400 text-[11px]">
-              <Mail className="w-4 h-4 text-[#38C8BA] shrink-0" />
-              <span>contact@milesforsmilesnepal.org</span>
+
+            <div className="flex items-center gap-2 text-xs text-teal-200/90 pt-1">
+              <ShieldCheck className="h-4 w-4 text-[#F4C542]" />
+              <span>Registered NGO · Affiliated with Social Welfare Council</span>
             </div>
           </div>
 
-          {/* Col 2: Organization */}
-          <div className="space-y-2.5">
-            <h5 className="font-semibold text-white tracking-wider uppercase text-[11px]">Organization</h5>
-            <ul className="space-y-2">
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+              Explore
+            </h4>
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <button onClick={() => handleNav('about')} className="hover:text-white transition-colors cursor-pointer">
-                  Our Mission & Story
-                </button>
+                <Link to="/" className="text-slate-300 hover:text-white transition-colors">
+                  Home
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('projects')} className="hover:text-white transition-colors cursor-pointer">
-                  Field Expeditions
-                </button>
+                <Link to="/about" className="text-slate-300 hover:text-white transition-colors">
+                  About Our Movement
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('impact-map')} className="hover:text-white transition-colors cursor-pointer">
-                  Interactive Nepal Map
-                </button>
+                <Link to="/projects" className="text-slate-300 hover:text-white transition-colors">
+                  Our Projects & Camps
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('reports')} className="hover:text-white transition-colors cursor-pointer">
-                  Financial Audits & PDFs
-                </button>
+                <Link to="/gallery" className="text-slate-300 hover:text-white transition-colors">
+                  Field Photo Gallery
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('sponsors')} className="hover:text-white transition-colors cursor-pointer">
-                  Institutional Partners
-                </button>
+                <Link to="/reports" className="text-slate-300 hover:text-white transition-colors">
+                  Reports & Transparency
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-slate-300 hover:text-white transition-colors">
+                  Stories & Blog
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Programs & Activities */}
-          <div className="space-y-2.5">
-            <h5 className="font-semibold text-white tracking-wider uppercase text-[11px]">Core Programs</h5>
-            <ul className="space-y-2">
+          {/* Get Involved */}
+          <div>
+            <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+              Get Involved
+            </h4>
+            <ul className="space-y-2.5 text-sm">
               <li>
-                <button onClick={() => handleNav('projects')} className="hover:text-white transition-colors cursor-pointer">
-                  Free Dental Camps
-                </button>
+                <Link to="/volunteer" className="text-slate-300 hover:text-white transition-colors">
+                  Become a Volunteer
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('projects')} className="hover:text-white transition-colors cursor-pointer">
-                  School Health & Fluoride
-                </button>
+                <Link to="/partner" className="text-slate-300 hover:text-white transition-colors">
+                  Sponsor & Partnership
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('projects')} className="hover:text-white transition-colors cursor-pointer">
-                  Menstrual Hygiene Dignity
-                </button>
+                <Link to="/donate" className="text-slate-300 hover:text-white transition-colors">
+                  Donate to Smiles
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('projects')} className="hover:text-white transition-colors cursor-pointer">
-                  Monsoon Flood Relief
-                </button>
+                <Link to="/contact" className="text-slate-300 hover:text-white transition-colors">
+                  Contact Our Team
+                </Link>
               </li>
-              <li>
-                <button onClick={() => handleNav('gallery')} className="hover:text-white transition-colors cursor-pointer">
-                  Photo Documentation
-                </button>
+              <li className="pt-2">
+                <Link
+                  to="/donate"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#F4C542] hover:underline"
+                >
+                  <Heart className="h-3.5 w-3.5 fill-current" />
+                  <span>100% Direct Field Impact</span>
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Take Action */}
-          <div className="space-y-2.5">
-            <h5 className="font-semibold text-white tracking-wider uppercase text-[11px]">Get Involved</h5>
-            <ul className="space-y-2">
-              <li>
-                <button onClick={() => handleNav('volunteer')} className="hover:text-white transition-colors cursor-pointer">
-                  Volunteer as Dental Student
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('donate')} className="hover:text-white transition-colors cursor-pointer">
-                  Donate via eSewa & Khalti
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('donate')} className="hover:text-white transition-colors cursor-pointer">
-                  Direct Bank Wire (NPR / USD)
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('sponsors')} className="hover:text-white transition-colors cursor-pointer">
-                  Corporate CSR Partnerships
-                </button>
-              </li>
-              <li>
-                <button onClick={() => handleNav('contact')} className="hover:text-white transition-colors cursor-pointer">
-                  Request Camp for Village
-                </button>
-              </li>
-            </ul>
+          {/* Contact Details & Social */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-white mb-4">
+              Contact & Social
+            </h4>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="h-4 w-4 text-[#2dd4bf] mt-0.5 flex-shrink-0" />
+                <span>Kathmandu, Nepal</span>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Mail className="h-4 w-4 text-[#2dd4bf] flex-shrink-0" />
+                <a
+                  href="mailto:info@milesforsmilesnepal.org"
+                  className="hover:text-white transition-colors break-all"
+                >
+                  info@milesforsmilesnepal.org
+                </a>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <Phone className="h-4 w-4 text-[#2dd4bf] flex-shrink-0" />
+                <a
+                  href="tel:+9779800000000"
+                  className="hover:text-white transition-colors"
+                >
+                  +977 9800000000
+                </a>
+              </div>
+            </div>
+
+            <div className="pt-3">
+              <div className="text-xs uppercase font-semibold text-slate-400 mb-2.5">
+                Follow Our Journey
+              </div>
+              <div className="flex gap-2.5">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#1AAE9F] transition-colors"
+                >
+                  <Facebook className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#1AAE9F] transition-colors"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://youtube.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="YouTube"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#1AAE9F] transition-colors"
+                >
+                  <Youtube className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-[#1AAE9F] transition-colors"
+                >
+                  <Twitter className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar: Copyright & Nepali Pride */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <span>© {new Date().getFullYear()} Miles for Smiles Nepal (मुस्कानको लागि पाइला). All rights reserved.</span>
+      {/* 3. Bottom Legal Disclaimer */}
+      <div className="relative border-t border-white/10 py-6 text-center text-xs text-slate-400">
+        <div className="container-app flex flex-col items-center justify-between gap-3 sm:flex-row">
+          <div>
+            © {new Date().getFullYear()} Miles for Smiles Nepal (मुस्कानको लागि पाइला नेपाल). All rights reserved.
           </div>
-
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1 text-slate-400">
-              Made with <Heart className="w-3 h-3 text-rose-500 fill-current" /> by Dental Students of Nepal
-            </span>
-            <span className="hidden sm:inline">·</span>
-            <span className="font-nepali text-slate-400">मुस्कान हरेक बालबालिकाको अधिकार</span>
+          <div className="font-semibold text-slate-300">
+            Reach the Unreached · Reaching Every Remote Smile
           </div>
         </div>
       </div>

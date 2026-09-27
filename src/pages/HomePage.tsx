@@ -1,612 +1,721 @@
-import React from 'react';
-import { PageId, Project, FieldStory } from '../types';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import {
-  HERO_IMAGE,
-  IMPACT_METRICS,
-  FEATURED_PROJECTS,
-  JOURNEY_TIMELINE,
-  FIELD_STORIES,
-  PARTNERS_DATA,
-  NEWS_ARTICLES,
-  DISTRICTS_DATA,
-  MFSN_LOGO_IMAGE,
-} from '../data/organizationData';
-import { NepalMap } from '../components/NepalMap';
-import { MFSNLogo } from '../components/MFSNLogo';
+  HERO_SLIDES,
+  INITIAL_IMPACT_METRICS,
+  INITIAL_DISTRICTS,
+  INITIAL_PROJECTS,
+  INITIAL_MILESTONES,
+  INITIAL_STORIES,
+  CORE_VALUES,
+  ImpactMetric,
+  District,
+  Project,
+  Milestone,
+  Story,
+} from '../data/boltData';
+import { SectionHeader } from '../components/SectionHeader';
 import {
   Heart,
   Users,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  Calendar,
   MapPin,
+  Sparkles,
   Smile,
+  Package,
+  GraduationCap,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  Quote,
+  Building,
+  Flag,
+  Mountain,
+  Globe,
   CheckCircle2,
   ExternalLink,
-  Award,
 } from 'lucide-react';
 
-interface HomePageProps {
-  onNavigate: (page: PageId) => void;
-  onOpenProject: (project: Project) => void;
+// Helper coordinate mapping matching Bolt's JE(lat, lng) function
+function projectCoordinates(lat: number, lng: number) {
+  const x = ((lng - 79.5) / 9) * 100;
+  const y = ((30.5 - lat) / (30.5 - 25.5)) * 100;
+  return { x, y };
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenProject }) => {
+export const HomePage: React.FC = () => {
+  // Hero slider state
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Live or fallback data states
+  const [metrics, setMetrics] = useState<ImpactMetric[]>(INITIAL_IMPACT_METRICS);
+  const [districts, setDistricts] = useState<District[]>(INITIAL_DISTRICTS);
+  const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
+  const [milestones, setMilestones] = useState<Milestone[]>(INITIAL_MILESTONES);
+  const [stories, setStories] = useState<Story[]>(INITIAL_STORIES);
+
+  // Selected district in map
+  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(INITIAL_DISTRICTS[1]); // Default to Jumla
+
+  // Auto-advance hero slides
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  }, []);
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(nextSlide, 6000);
+    return () => clearInterval(timer);
+  }, [nextSlide]);
+
+  // Load latest data from Supabase if connected
+  useEffect(() => {
+    supabase
+      .from('impact_metrics')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) setMetrics(data);
+      });
+
+    supabase
+      .from('districts')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) setDistricts(data);
+      });
+
+    supabase
+      .from('projects')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          // ensure cover images
+          const enriched = data.map((p) => ({
+            ...p,
+            cover_image:
+              p.cover_image ||
+              INITIAL_PROJECTS.find((ip) => ip.slug === p.slug)?.cover_image ||
+              'https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=800',
+          }));
+          setProjects(enriched);
+        }
+      });
+
+    supabase
+      .from('milestones')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) setMilestones(data);
+      });
+
+    supabase
+      .from('stories')
+      .select('*')
+      .order('display_order', { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) setStories(data);
+      });
+  }, []);
+
+  const getMetricIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'graduation-cap':
+        return <GraduationCap className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'heart':
+        return <Heart className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'map-pin':
+        return <MapPin className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'package':
+        return <Package className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'smile':
+        return <Smile className="h-6 w-6 text-[#1AAE9F]" />;
+      default:
+        return <Sparkles className="h-6 w-6 text-[#1AAE9F]" />;
+    }
+  };
+
+  const getMilestoneIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'flag':
+        return <Flag className="h-5 w-5 text-[#F4C542]" />;
+      case 'sparkles':
+        return <Sparkles className="h-5 w-5 text-[#F4C542]" />;
+      case 'mountain':
+        return <Mountain className="h-5 w-5 text-[#F4C542]" />;
+      case 'globe':
+        return <Globe className="h-5 w-5 text-[#F4C542]" />;
+      case 'users':
+        return <Users className="h-5 w-5 text-[#F4C542]" />;
+      default:
+        return <Heart className="h-5 w-5 text-[#F4C542]" />;
+    }
+  };
+
   return (
-    <div className="space-y-16 sm:space-y-24">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-6 sm:pt-10 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left Column: Headlines & Human Value Proposition */}
-            <div className="lg:col-span-7 space-y-6">
-              {/* Unboxed Metadata & Official Logo Crest */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-50 border border-teal-200/80 shadow-2xs">
-                  <div className="w-5 h-5 rounded-md overflow-hidden bg-[#16A396]">
-                    <img src={MFSN_LOGO_IMAGE} alt="MFSN Crest" className="w-full h-full object-cover" />
-                  </div>
-                  <span className="text-xs font-bold text-[#16A396] uppercase tracking-wider">
-                    MFSN Official Emblem · 2024
-                  </span>
-                </div>
-                <div className="text-xs font-semibold text-slate-500 font-nepali">
-                  मुस्कानको लागि पाइला नेपाल
-                </div>
-              </div>
-
-              {/* Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12] text-balance">
-                Reach the Unreached. <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16A396] via-[#0E786E] to-[#38C8BA]">
-                  Every Smile Matters.
-                </span>
-              </h1>
-
-              {/* Nepali Sub-headline */}
-              <p className="text-lg sm:text-xl font-medium text-slate-700 font-nepali">
-                दन्त चिकित्सक विद्यार्थीहरूद्वारा स्थापित: दुर्गम हिमाली बस्तीका बालबालिकालाई निःशुल्क दन्त उपचार र स्वास्थ्य शिक्षा।
-              </p>
-
-              {/* Descriptive Paragraph */}
-              <p className="text-base text-slate-600 leading-relaxed max-w-2xl">
-                Miles for Smiles Nepal (MFSN) is a youth-led nonprofit founded by passionate dental students dedicated to eradicating oral disease and expanding healthcare access to remote, underserved communities across Nepal.
-              </p>
-
-              {/* Hero Action CTAs */}
-              <div className="pt-2 flex flex-wrap items-center gap-3">
-                <button
-                  onClick={() => onNavigate('donate')}
-                  className="px-6 py-3.5 text-sm font-bold text-white bg-[#16A396] hover:bg-[#0E786E] rounded-xl transition-all shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer whitespace-nowrap"
-                >
-                  <Heart className="w-4 h-4 text-[#F4C542] fill-current" />
-                  <span>Donate to Support a Child</span>
-                </button>
-
-                <button
-                  onClick={() => onNavigate('volunteer')}
-                  className="px-6 py-3.5 text-sm font-semibold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer whitespace-nowrap"
-                >
-                  <Users className="w-4 h-4 text-[#16A396]" />
-                  <span>Join as Volunteer</span>
-                </button>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-slate-500 border-t border-slate-200/60">
-                <span className="flex items-center gap-1.5 font-medium text-slate-700">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  Social Welfare Council Registered
-                </span>
-                <span className="flex items-center gap-1.5 font-medium text-slate-700">
-                  <Award className="w-4 h-4 text-[#16A396]" />
-                  100% Volunteer Directed
-                </span>
-                <span className="flex items-center gap-1.5 font-medium text-slate-700">
-                  <Smile className="w-4 h-4 text-[#F4C542]" />
-                  6,136+ Children Treated
-                </span>
-              </div>
-            </div>
-
-            {/* Right Column: Hero Visual Focal Frame with Brand Seal */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-white bg-slate-100 aspect-4/3 sm:aspect-5/4">
-                <img
-                  src={HERO_IMAGE}
-                  alt="Miles for Smiles Nepal dental camp in rural Himalayas"
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-
-                {/* Floating Official MFSN Logo Badge on Image */}
-                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-lg border border-white/50 flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl overflow-hidden bg-[#16A396] shadow-xs">
-                    <img src={MFSN_LOGO_IMAGE} alt="MFSN Logo" className="w-full h-full object-cover" />
-                  </div>
-                  <div className="pr-1 text-left">
-                    <span className="text-[11px] font-black text-slate-900 tracking-tight block">MFSN NEPAL</span>
-                    <span className="text-[9px] font-bold text-[#16A396] uppercase tracking-wide block">Estd. 2024</span>
-                  </div>
-                </div>
-
-                {/* Overlaid Live Stat Callout */}
-                <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 text-slate-900">
-                  <div className="flex items-center justify-between text-xs text-slate-500 mb-1 font-semibold uppercase tracking-wide">
-                    <span>Recent Expedition</span>
-                    <span className="text-[#16A396] font-bold">Upper Karnali</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-xl font-bold tabular-nums text-slate-900">2,060+ Students</div>
-                      <div className="text-xs text-slate-600">Free screenings & restorative treatments</div>
-                    </div>
-                    <button
-                      onClick={() => onNavigate('projects')}
-                      className="p-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-[#16A396] transition-colors"
-                      title="View Karnali Project"
-                    >
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. IMPACT DASHBOARD */}
-      <section className="bg-slate-900 text-white py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold text-[#38C8BA] uppercase tracking-widest">
-              Measurable Human Outcomes
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
-              Field Realities & Documented Impact
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-2">
-              Every data point represents a real child, family, and village reached across the mountains and plains of Nepal.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="p-5 sm:p-6 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:border-[#16A396]/50 transition-colors">
-              <div className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums tracking-tight">
-                {IMPACT_METRICS.studentsReached.toLocaleString()}+
-              </div>
-              <div className="text-sm font-semibold text-slate-300 mt-2">Students Reached</div>
-              <p className="text-xs text-slate-400 mt-1">
-                Screened, educated, and treated across remote community schools.
-              </p>
-            </div>
-
-            <div className="p-5 sm:p-6 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:border-[#16A396]/50 transition-colors">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#38C8BA] tabular-nums tracking-tight">
-                {IMPACT_METRICS.districtsServed} Districts
-              </div>
-              <div className="text-sm font-semibold text-slate-300 mt-2">Geographic Footprint</div>
-              <p className="text-xs text-slate-400 mt-1">
-                From high-altitude Jumla & Humla to the southern Terai plains.
-              </p>
-            </div>
-
-            <div className="p-5 sm:p-6 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:border-[#16A396]/50 transition-colors">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#F4C542] tabular-nums tracking-tight">
-                {IMPACT_METRICS.hygieneKitsDistributed.toLocaleString()}+
-              </div>
-              <div className="text-sm font-semibold text-slate-300 mt-2">Hygiene Kits Distributed</div>
-              <p className="text-xs text-slate-400 mt-1">
-                Toothbrushes, fluoridated paste, and adolescent menstrual kits.
-              </p>
-            </div>
-
-            <div className="p-5 sm:p-6 rounded-2xl bg-slate-800/80 border border-slate-700/80 hover:border-[#16A396]/50 transition-colors">
-              <div className="text-3xl sm:text-4xl font-extrabold text-emerald-400 tabular-nums tracking-tight">
-                {IMPACT_METRICS.freeTreatmentsCompleted.toLocaleString()}+
-              </div>
-              <div className="text-sm font-semibold text-slate-300 mt-2">Free Dental Restorations</div>
-              <p className="text-xs text-slate-400 mt-1">
-                Painless ART cavity fillings, emergency extractions, and sealant therapy.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. INTERACTIVE NEPAL IMPACT MAP */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider">
-              <span>Interactive Field Map</span>
-              <span>·</span>
-              <span>Districts of Nepal</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-              Where Your Support Reaches
-            </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-xl">
-              Inspect our mobile clinic coordinates, medical team logs, and direct beneficiary impact across Nepal’s diverse terrain.
-            </p>
-          </div>
-
-          <button
-            onClick={() => onNavigate('impact-map')}
-            className="text-xs font-bold text-[#16A396] hover:text-[#0E786E] flex items-center gap-1.5 transition-colors cursor-pointer self-start md:self-auto"
+    <div>
+      {/* 1. HERO SLIDER */}
+      <section className="relative h-screen min-h-[640px] w-full overflow-hidden bg-slate-900">
+        {HERO_SLIDES.map((slide, idx) => (
+          <div
+            key={slide.title}
+            className={`absolute inset-0 transition-opacity duration-1000 ${
+              idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none'
+            }`}
           >
-            <span>Open Fullscreen Map View</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </button>
-        </div>
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
 
-        <NepalMap onNavigateToDonate={() => onNavigate('donate')} />
-      </section>
-
-      {/* 4. FEATURED PROJECTS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider">
-              <span>Key Initiatives</span>
-              <span>·</span>
-              <span>Field Expeditions</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-              Featured Humanitarian Programs
-            </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-xl">
-              Comprehensive dental camps, school education, adolescent menstrual health, and emergency disaster relief.
-            </p>
-          </div>
-
-          <button
-            onClick={() => onNavigate('projects')}
-            className="px-4 py-2 text-xs font-semibold text-[#16A396] bg-teal-50 hover:bg-teal-100 rounded-xl transition-colors self-start md:self-auto flex items-center gap-1.5"
-          >
-            <span>View All Programs ({FEATURED_PROJECTS.length})</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURED_PROJECTS.slice(0, 3).map((project) => (
-            <div
-              key={project.id}
-              className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between group"
-            >
-              <div>
-                <div className="relative aspect-16/10 bg-slate-100 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-lg text-[11px] font-semibold text-[#16A396] shadow-xs">
-                    {project.category}
-                  </div>
-                  <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-xs px-2.5 py-1 rounded-lg text-[11px] font-medium text-white shadow-xs">
-                    {project.status}
-                  </div>
+            {/* Slide Content */}
+            <div className="container-app relative flex h-full items-center">
+              <div className="max-w-2xl text-white pt-16">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[#1AAE9F]/30 backdrop-blur-md px-4 py-1.5 text-xs sm:text-sm font-semibold text-teal-200 border border-teal-400/30 mb-6">
+                  <span className="font-devanagari">मुस्कानको लागि पाइला नेपाल</span>
+                  <span>·</span>
+                  <span>Reach the Unreached</span>
                 </div>
 
-                <div className="p-5">
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mb-2">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                      {project.location.split(',')[0]}
-                    </span>
-                    <span>·</span>
-                    <span className="flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5 text-slate-400" />
-                      {project.beneficiariesCount.toLocaleString()} Reached
-                    </span>
-                  </div>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
+                  {slide.title}
+                </h1>
 
-                  <h3 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-[#16A396] transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 font-nepali mt-0.5">{project.nepaliTitle}</p>
-                  <p className="text-xs text-slate-600 mt-2.5 line-clamp-2 leading-relaxed">
-                    {project.summary}
-                  </p>
-                </div>
-              </div>
-
-              <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex items-center justify-between">
-                <button
-                  onClick={() => onOpenProject(project)}
-                  className="text-xs font-bold text-[#16A396] hover:text-[#0E786E] flex items-center gap-1 cursor-pointer"
-                >
-                  <span>Learn More</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-
-                <button
-                  onClick={() => onNavigate('donate')}
-                  className="text-xs font-medium text-slate-600 hover:text-slate-900"
-                >
-                  Support
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. JOURNEY TIMELINE */}
-      <section className="bg-slate-50 border-y border-slate-200/80 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold text-[#16A396] uppercase tracking-widest">
-              Youth Movement Evolution
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-              From a Dental Classroom to Nationwide Impact
-            </h2>
-            <p className="text-sm text-slate-600 mt-2 font-nepali">
-              हाम्रो यात्रा: सिन्धुपाल्चोकको पहिलो शिविरदेखि कर्णालीका विकट हिमालसम्म
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
-            {JOURNEY_TIMELINE.map((item, idx) => (
-              <div
-                key={item.year}
-                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs relative flex flex-col justify-between"
-              >
-                <div>
-                  <div className="text-2xl font-black text-[#16A396] tracking-tight">{item.year}</div>
-                  <div className="text-xs font-semibold text-slate-500 font-nepali mt-0.5">{item.nepaliTitle}</div>
-                  <h4 className="text-sm font-bold text-slate-900 mt-2">{item.title}</h4>
-                  <p className="text-xs text-slate-600 mt-2 leading-relaxed">{item.description}</p>
-                </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-medium text-slate-500 flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Phase {idx + 1} Accomplished</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. STORIES FROM THE FIELD */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider">
-              <span>Authentic Human Voices</span>
-              <span>·</span>
-              <span>Case Narratives</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-              Stories from the Himalayan Trails
-            </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-xl">
-              Behind every statistic is a child whose pain was cured, a mother empowered, and a village school transformed.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {FIELD_STORIES.map((story) => (
-            <div
-              key={story.id}
-              className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs flex flex-col justify-between"
-            >
-              <div className="p-6">
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
-                  <span className="flex items-center gap-1 font-semibold text-[#16A396]">
-                    <MapPin className="w-3.5 h-3.5" />
-                    {story.location}
-                  </span>
-                  <span>{story.date}</span>
-                </div>
-
-                <h3 className="text-base font-bold text-slate-900 leading-snug mb-3">{story.title}</h3>
-
-                <p className="text-xs text-slate-700 leading-relaxed italic mb-4">
-                  "{story.narrative}"
+                <p className="mt-6 text-lg sm:text-xl text-slate-200 leading-relaxed font-normal">
+                  {slide.subtitle}
                 </p>
 
-                <div className="p-3 bg-teal-50/70 rounded-xl border border-teal-100 text-xs text-[#16A396] font-medium">
-                  <strong>Outcome:</strong> {story.impactHighlight}
-                </div>
-              </div>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <Link to="/projects" className="btn-primary">
+                    <span>Explore Our Projects</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
 
-              <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
-                <div>
-                  <span className="font-bold text-slate-900 block">{story.author}</span>
-                  <span className="text-slate-500">{story.role}</span>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 font-bold">
-                  {story.author[0]}
+                  <Link to="/volunteer" className="btn-hope">
+                    <span>Join as Volunteer</span>
+                  </Link>
                 </div>
               </div>
             </div>
-          ))}
+          </div>
+        ))}
+
+        {/* Slider Controls */}
+        <div className="absolute bottom-8 left-0 right-0 z-20">
+          <div className="container-app flex items-center justify-between">
+            {/* Dots */}
+            <div className="flex gap-2">
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                    idx === currentSlide ? 'w-8 bg-[#1AAE9F]' : 'w-2.5 bg-white/50 hover:bg-white'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Prev / Next buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={prevSlide}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md hover:bg-white/40 transition-colors cursor-pointer"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md hover:bg-white/40 transition-colors cursor-pointer"
+                aria-label="Next slide"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 7. SPONSORS & INSTITUTIONAL PARTNERS */}
-      <section className="bg-slate-50 border-y border-slate-200/80 py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <span className="text-xs font-bold text-[#16A396] uppercase tracking-widest">
-              Trusted Collaboration
-            </span>
-            <h2 className="text-2xl font-bold text-slate-900 mt-1">Our Partners & Healthcare Allies</h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1">
-              Working hand-in-hand with medical governance bodies, universities, and humanitarian grant-makers.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {PARTNERS_DATA.map((partner) => (
+      {/* 2. IMPACT METRICS OVERLAY */}
+      <section className="relative -mt-16 sm:-mt-20 z-20">
+        <div className="container-app">
+          <div className="grid grid-cols-2 gap-4 rounded-3xl bg-white p-6 sm:p-8 shadow-card dark:bg-slate-800 lg:grid-cols-5 border border-slate-100 dark:border-slate-700">
+            {metrics.map((m) => (
               <div
-                key={partner.id}
-                className="p-4 bg-white rounded-xl border border-slate-200/80 text-center flex flex-col justify-center items-center h-28 shadow-2xs hover:shadow-xs transition-shadow"
+                key={m.id}
+                className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
               >
-                <div className="text-xs font-extrabold tracking-wider text-slate-800">{partner.logoText}</div>
-                <div className="text-[10px] text-[#16A396] font-semibold mt-1">{partner.tier}</div>
-                <div className="text-[10px] text-slate-500 mt-0.5 line-clamp-1">{partner.category}</div>
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 dark:bg-teal-900/30 mb-3">
+                  {getMetricIcon(m.icon)}
+                </div>
+                <div className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                  {m.value.toLocaleString()}{m.suffix}
+                </div>
+                <div className="mt-1 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">
+                  {m.label}
+                </div>
               </div>
             ))}
           </div>
-
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => onNavigate('sponsors')}
-              className="text-xs font-semibold text-[#16A396] hover:underline cursor-pointer"
-            >
-              Explore our Institutional Partnership Model & CSR Opportunities →
-            </button>
-          </div>
         </div>
       </section>
 
-      {/* 8. VOLUNTEER CALL-TO-ACTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl bg-gradient-to-r from-[#16A396] to-[#0E786E] text-white p-8 sm:p-12 overflow-hidden shadow-lg">
-          <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-[#F4C542]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Join the Movement</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Are you a Dental or Medical Student in Nepal?
-            </h2>
-            <p className="text-teal-50 text-sm sm:text-base leading-relaxed">
-              Step out of the classroom into rural Nepal. Gain priceless clinical field experience, save smiles from severe toothaches, and build lifelong friendships with compassionate peers.
-            </p>
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => onNavigate('volunteer')}
-                className="px-6 py-3 bg-[#F4C542] hover:bg-[#eab308] text-slate-900 font-bold text-xs sm:text-sm rounded-xl transition-colors cursor-pointer shadow-sm"
-              >
-                Apply as Volunteer Dental Student
-              </button>
-              <button
-                onClick={() => onNavigate('contact')}
-                className="px-5 py-3 bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm rounded-xl transition-colors cursor-pointer"
-              >
-                Invite Us to Your University
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. DONATION CALLOUT SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-10 shadow-sm">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider">
-                <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" />
-                <span>Transparent Giving</span>
-                <span>·</span>
-                <span className="font-nepali">पारदर्शी सहयोग</span>
+      {/* 3. MISSION & STORY SECTION */}
+      <section className="section-padding">
+        <div className="container-app">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            {/* Left Collage */}
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <img
+                    src="https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Dental checkup Nepal"
+                    className="w-full rounded-2xl object-cover shadow-card aspect-[4/5]"
+                  />
+                  <img
+                    src="https://images.pexels.com/photos/36423522/pexels-photo-36423522.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Happy smiling children Nepal"
+                    className="w-full rounded-2xl object-cover shadow-card aspect-[1/1]"
+                  />
+                </div>
+                <div className="space-y-4 pt-8">
+                  <img
+                    src="https://images.pexels.com/photos/9812303/pexels-photo-9812303.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Community oral hygiene camp"
+                    className="w-full rounded-2xl object-cover shadow-card aspect-[1/1]"
+                  />
+                  <img
+                    src="https://images.pexels.com/photos/2095948/pexels-photo-2095948.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    alt="Volunteer dental team Nepal"
+                    className="w-full rounded-2xl object-cover shadow-card aspect-[4/5]"
+                  />
+                </div>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                A Small Gift Restores Smiles Across an Entire Village
+
+              {/* Float badge */}
+              <div className="absolute -bottom-6 -right-6 hidden rounded-2xl bg-[#073936] p-6 text-white shadow-lg sm:block border border-teal-500/30">
+                <div className="font-devanagari text-lg text-[#F4C542] font-bold">
+                  मुस्कानको लागि पाइला
+                </div>
+                <div className="text-xs text-teal-200 font-semibold mt-1">
+                  Youth-Led Dental Movement
+                </div>
+              </div>
+            </div>
+
+            {/* Right Copy */}
+            <div className="space-y-6">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1AAE9F]">
+                About Our Movement
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Reaching the Unreached with Compassion & Care
               </h2>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                We accept donations directly via <strong>eSewa</strong>, <strong>Khalti</strong>, and <strong>Nepal Bank Limited / Nabil Bank</strong> wire transfers. 89.4% of every rupee directly funds medicines, atraumatic dental fillings, and oral hygiene packs.
+              <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                Oral health is essential to overall well-being, yet it remains one of the most neglected areas of healthcare in Nepal — especially in rural and underserved communities where families may walk for days to see a doctor.
+              </p>
+              <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                Founded by dental students, <strong className="text-slate-900 dark:text-white">Miles for Smiles Nepal (मुस्कानको लागि पाइला नेपाल)</strong> travels to high-altitude monasteries, flood-ravaged villages, and remote schools to deliver free restorative dental treatment, oral hygiene kits, and preventive education.
               </p>
 
-              {/* Donation Tiers Preview */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-base font-bold text-[#16A396]">रू ५०० ($4)</div>
-                  <div className="text-xs text-slate-600 mt-1">Hygiene packs for 5 rural students</div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-base font-bold text-[#16A396]">रू २,००० ($15)</div>
-                  <div className="text-xs text-slate-600 mt-1">Fluoride varnish for an entire classroom</div>
-                </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-base font-bold text-[#16A396]">रू १०,००० ($75)</div>
-                  <div className="text-xs text-slate-600 mt-1">Mountain porter & mobile unit logistics</div>
-                </div>
+              {/* 4 Core Pillars Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                {CORE_VALUES.slice(0, 4).map((val) => (
+                  <div
+                    key={val.title}
+                    className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-100 dark:border-slate-700"
+                  >
+                    <div className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-[#1AAE9F]" />
+                      {val.title}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {val.description}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
 
-            <div className="lg:col-span-5 bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center space-y-4">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wide block">
-                Instant Nepal Payment Gateways
-              </span>
-              <div className="flex items-center justify-center gap-3">
-                <div className="px-4 py-2 bg-emerald-600 text-white font-extrabold text-xs rounded-lg shadow-2xs">
-                  eSewa
-                </div>
-                <div className="px-4 py-2 bg-purple-700 text-white font-extrabold text-xs rounded-lg shadow-2xs">
-                  Khalti
-                </div>
-                <div className="px-4 py-2 bg-[#16A396] text-white font-extrabold text-xs rounded-lg shadow-2xs">
-                  Bank Wire
-                </div>
+              <div className="pt-2">
+                <Link to="/about" className="btn-outline">
+                  <span>Learn More About Us</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <p className="text-xs text-slate-500">
-                Official PAN: 618492019 · Registered under Social Welfare Council Nepal.
-              </p>
-              <button
-                onClick={() => onNavigate('donate')}
-                className="w-full py-3 bg-[#16A396] hover:bg-[#0E786E] text-white text-xs font-bold rounded-xl transition-colors shadow-xs cursor-pointer"
-              >
-                Go to Donation Page with QR Codes
-              </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 10. LATEST NEWS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="flex items-center justify-between gap-4 mb-6">
-          <div>
-            <div className="text-xs font-bold text-[#16A396] uppercase tracking-wider">Dispatches</div>
-            <h2 className="text-2xl font-extrabold text-slate-900 mt-1">Latest News & Media Coverage</h2>
-          </div>
-          <button
-            onClick={() => onNavigate('news')}
-            className="text-xs font-bold text-[#16A396] hover:underline cursor-pointer"
-          >
-            All Articles →
-          </button>
-        </div>
+      {/* 4. NEPAL IMPACT MAP SECTION */}
+      <section className="section-padding bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-800/50">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Our Reach"
+            title="Nepal Impact Map"
+            subtitle="Click on a district to explore the communities we've reached and the impact we've made together."
+          />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {NEWS_ARTICLES.map((article) => (
-            <div
-              key={article.id}
-              className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-2xs flex flex-col justify-between"
-            >
-              <div className="p-5">
-                <div className="flex items-center gap-2 text-xs text-slate-500 mb-2">
-                  <span className="font-semibold text-[#16A396]">{article.category}</span>
-                  <span>·</span>
-                  <span>{article.date}</span>
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 leading-snug">{article.title}</h3>
-                <p className="text-xs text-slate-600 mt-2 line-clamp-2 leading-relaxed">{article.summary}</p>
-              </div>
-              <div className="p-5 pt-0">
-                <button
-                  onClick={() => onNavigate('news')}
-                  className="text-xs font-semibold text-[#16A396] hover:underline cursor-pointer"
+          <div className="mt-12 grid gap-8 lg:grid-cols-5 items-start">
+            {/* Interactive SVG Nepal Map */}
+            <div className="lg:col-span-3 rounded-3xl bg-gradient-to-br from-teal-50/70 to-sky-50/50 p-6 shadow-card dark:from-slate-800 dark:to-slate-700 border border-teal-100 dark:border-slate-600 relative overflow-hidden">
+              <div className="relative aspect-[4/3] w-full">
+                <svg
+                  viewBox="0 0 100 75"
+                  className="h-full w-full"
+                  style={{ filter: 'drop-shadow(0 4px 12px rgba(26,174,159,0.15))' }}
                 >
-                  Read Dispatch →
-                </button>
+                  {/* Stylized Nepal Map outline from Bolt */}
+                  <path
+                    d="M 8,15 L 15,8 L 25,6 L 35,10 L 45,7 L 55,5 L 62,9 L 70,6 L 78,10 L 85,8 L 90,15 L 92,25 L 88,35 L 90,45 L 85,55 L 80,60 L 70,62 L 60,58 L 50,62 L 40,60 L 30,58 L 22,55 L 15,50 L 10,42 L 8,35 L 6,25 Z"
+                    className="fill-white stroke-teal-200 stroke-1 dark:fill-slate-700 dark:stroke-slate-600 transition-colors"
+                  />
+
+                  {/* Interactive Districts */}
+                  {districts.map((dist) => {
+                    const { x, y } = projectCoordinates(dist.lat, dist.lng);
+                    const isSelected = selectedDistrict?.id === dist.id;
+
+                    return (
+                      <g
+                        key={dist.id}
+                        onClick={() => setSelectedDistrict(dist)}
+                        className="cursor-pointer group"
+                      >
+                        {isSelected && (
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r="4.5"
+                            className="fill-[#F4C542]/40 animate-ping"
+                          />
+                        )}
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r={isSelected ? '2.8' : '1.8'}
+                          className={
+                            isSelected
+                              ? 'fill-[#F4C542] stroke-white stroke-[0.4]'
+                              : 'fill-[#1AAE9F] hover:fill-[#2dd4bf] stroke-white stroke-[0.3]'
+                          }
+                          style={{ transition: 'all 0.3s' }}
+                        />
+                        <text
+                          x={x}
+                          y={y - 3.2}
+                          textAnchor="middle"
+                          className="fill-slate-800 text-[2.6px] font-bold dark:fill-slate-200 select-none pointer-events-none"
+                        >
+                          {dist.name}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </svg>
+
+                {/* Map Legend */}
+                <div className="absolute bottom-4 left-4 flex items-center gap-4 rounded-xl bg-white/90 px-4 py-2 text-xs font-semibold backdrop-blur-md dark:bg-slate-800/90 shadow-sm border border-slate-100 dark:border-slate-700">
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-3 w-3 rounded-full bg-[#1AAE9F]" />
+                    <span className="text-slate-700 dark:text-slate-300">
+                      District Reached
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <div className="h-3 w-3 rounded-full bg-[#F4C542]" />
+                    <span className="text-slate-700 dark:text-slate-300">
+                      Selected
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+
+            {/* Selected District Details Card */}
+            <div className="lg:col-span-2">
+              {selectedDistrict ? (
+                <div className="animate-fade-in rounded-3xl bg-white p-8 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-6">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#1AAE9F]">
+                        {selectedDistrict.region} Region
+                      </span>
+                      <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
+                        {selectedDistrict.name}
+                      </h3>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Active Outreach
+                    </span>
+                  </div>
+
+                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {selectedDistrict.project_summary ||
+                      'Comprehensive oral health camps, student hygiene education, and free clinical dental care.'}
+                  </p>
+
+                  <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-slate-700/50 border border-teal-100/60 dark:border-slate-600">
+                    <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      Community Beneficiaries
+                    </div>
+                    <div className="text-lg font-bold text-[#0f7069] dark:text-[#2dd4bf] mt-0.5">
+                      {selectedDistrict.beneficiaries || 'Hundreds of patients'}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex gap-3">
+                    <Link to="/projects" className="btn-primary w-full text-center">
+                      <span>View Project Details</span>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="rounded-3xl bg-white p-8 text-center shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-500">
+                  Select a district on the map to explore outreach details.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. FEATURED PROJECTS SECTION */}
+      <section className="section-padding">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="What We Do"
+            title="Featured Projects"
+            subtitle="Every project brings smiles, pain relief, and sustainable oral health education."
+          />
+
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {projects.slice(0, 3).map((proj) => (
+              <article
+                key={proj.id}
+                className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1.5 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={proj.cover_image}
+                    alt={proj.title}
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  <span className="absolute bottom-4 left-4 inline-block rounded-full bg-white/95 px-3.5 py-1 text-xs font-bold capitalize text-[#0f7069] shadow-sm backdrop-blur-md">
+                    {proj.category.replace(/-/g, ' ')}
+                  </span>
+                </div>
+
+                <div className="flex-1 p-6 sm:p-7 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900 transition-colors group-hover:text-[#1AAE9F] dark:text-white dark:group-hover:text-[#2dd4bf]">
+                      {proj.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300 line-clamp-3">
+                      {proj.excerpt}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400">
+                      {proj.location && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5 text-[#1AAE9F]" />
+                          {proj.location}
+                        </span>
+                      )}
+                      {proj.beneficiaries && (
+                        <span className="flex items-center gap-1">
+                          <Users className="h-3.5 w-3.5 text-[#1AAE9F]" />
+                          {proj.beneficiaries}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+                    <Link
+                      to={`/projects/${proj.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-bold text-[#1AAE9F] group-hover:text-[#0f7069] transition-colors"
+                    >
+                      <span>View Project Details</span>
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link to="/projects" className="btn-outline">
+              <span>View All Projects</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. MILESTONES & JOURNEY SECTION */}
+      <section className="section-padding bg-[#073936] text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <SectionHeader
+            eyebrow="Our Journey"
+            title="From Dental Students to a Movement"
+            subtitle="Key milestones that have shaped our mission of reaching the unreached."
+          />
+
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {milestones.map((m) => (
+              <div
+                key={m.id}
+                className="rounded-3xl bg-white/10 p-6 sm:p-7 backdrop-blur-md border border-white/10 hover:border-teal-400/40 transition-all hover:-translate-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-full bg-[#F4C542] px-3.5 py-1 text-xs font-extrabold text-[#472e00]">
+                    {m.year}
+                  </span>
+                  <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                    {getMilestoneIcon(m.icon)}
+                  </div>
+                </div>
+
+                <h3 className="mt-4 text-xl font-bold text-white">
+                  {m.title}
+                </h3>
+
+                <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                  {m.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. FIELD STORIES SECTION */}
+      <section className="section-padding bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Stories from the Field"
+            title="Voices of Impact & Hope"
+            subtitle="Behind every number is a human story of relief, renewed dignity, and lasting smiles."
+          />
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            {stories.map((st) => (
+              <div
+                key={st.id}
+                className="flex flex-col justify-between rounded-3xl bg-white p-7 sm:p-8 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700"
+              >
+                <div>
+                  <Quote className="h-8 w-8 text-[#1AAE9F] opacity-70 mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">
+                    {st.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 italic">
+                    "{st.excerpt}"
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between">
+                  <div>
+                    <div className="text-sm font-bold text-slate-900 dark:text-white">
+                      {st.author_name}
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      {st.author_role}
+                    </div>
+                  </div>
+                  <span className="text-xs text-[#0f7069] dark:text-[#2dd4bf] font-semibold">
+                    {st.location}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. CALL TO ACTION CARDS */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0f7069] via-[#148f84] to-[#073936] py-20 text-white">
+        <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
+
+        <div className="container-app relative z-10 text-center max-w-4xl mx-auto space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs sm:text-sm font-semibold text-teal-200">
+            <span>Be Part of the Smile Revolution</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+            Together, We Can Reach Every Remote Village in Nepal
+          </h2>
+
+          <p className="text-base sm:text-lg text-teal-100 max-w-2xl mx-auto leading-relaxed">
+            Whether through donation, professional volunteering, or institutional CSR sponsorship — your support directly restores pain-free smiles.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 text-left">
+            <Link
+              to="/donate"
+              className="group rounded-3xl bg-white p-7 text-slate-900 shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <div className="h-12 w-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mb-4">
+                <Heart className="h-6 w-6 fill-current" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#1AAE9F] transition-colors">
+                Donate Now
+              </h3>
+              <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                100% of donations directly fund dental supplies, mobile clinics, and remote patient care.
+              </p>
+            </Link>
+
+            <Link
+              to="/volunteer"
+              className="group rounded-3xl bg-white p-7 text-slate-900 shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <div className="h-12 w-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center mb-4">
+                <Users className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#1AAE9F] transition-colors">
+                Volunteer With Us
+              </h3>
+              <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                Join dental students, dentists, and youth volunteers on the trails and in community schools.
+              </p>
+            </Link>
+
+            <Link
+              to="/partner"
+              className="group rounded-3xl bg-white p-7 text-slate-900 shadow-lg hover:-translate-y-1 transition-all"
+            >
+              <div className="h-12 w-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4">
+                <Building className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#1AAE9F] transition-colors">
+                Corporate CSR & Partners
+              </h3>
+              <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                Sponsor a dental camp, supply hygiene materials, and receive transparent impact reporting.
+              </p>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

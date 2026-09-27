@@ -1,507 +1,204 @@
 import React, { useState } from 'react';
-import { PageId } from '../types';
+import { DONATION_TIERS, DONATION_METHODS } from '../data/boltData';
+import { PageHeader } from '../components/PageHeader';
+import { SectionHeader } from '../components/SectionHeader';
 import {
   Heart,
-  QrCode,
-  CreditCard,
-  Building,
-  Globe,
   Copy,
   Check,
+  Building,
+  Smartphone,
+  Globe,
   ShieldCheck,
-  Sparkles,
-  Receipt,
-  FileCheck,
+  ArrowRight,
 } from 'lucide-react';
 
-interface DonatePageProps {
-  onNavigate: (page: PageId) => void;
-}
+export const DonatePage: React.FC = () => {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
-export const DonatePage: React.FC<DonatePageProps> = ({ onNavigate }) => {
-  const [selectedMethod, setSelectedMethod] = useState<'esewa' | 'khalti' | 'bank' | 'international'>('esewa');
-  const [selectedTier, setSelectedTier] = useState<number>(2000);
-  const [customAmount, setCustomAmount] = useState<string>('');
-  const [copiedField, setCopiedField] = useState<string | null>(null);
-
-  // Receipt request state
-  const [receiptName, setReceiptName] = useState('');
-  const [receiptEmail, setReceiptEmail] = useState('');
-  const [receiptTxn, setReceiptTxn] = useState('');
-  const [receiptSuccess, setReceiptSuccess] = useState(false);
-
-  const tiers = [
-    {
-      amount: 500,
-      usd: '$4',
-      title: 'Smile Starter',
-      nepaliTitle: '५ बालबालिकाको लागि',
-      desc: 'Oral hygiene packs (toothbrush, fluoride paste & brushing timer card) for 5 village school students.',
-    },
-    {
-      amount: 2000,
-      usd: '$15',
-      title: 'Classroom Protector',
-      nepaliTitle: 'एक कक्षाको सम्पूर्ण स्वास्थ्य',
-      desc: 'Topical sodium fluoride varnish and diagnostic oral screenings for an entire primary classroom (30 students).',
-    },
-    {
-      amount: 10000,
-      usd: '$75',
-      title: 'Mountain Expedition Support',
-      nepaliTitle: 'पहाडी ढुवानी तथा उपकरण',
-      desc: 'Supports mountain porters carrying mobile dental handpieces, portable solar power, and sterilization autoclaves.',
-    },
-    {
-      amount: 25000,
-      usd: '$190',
-      title: 'Village Camp Champion',
-      nepaliTitle: 'गाउँभरिका लागि पूर्ण शिविर',
-      desc: 'Comprehensive 2-day Atraumatic Restorative Treatment (ART) camp, tooth extractions, and menstrual kits for an entire settlement.',
-    },
-  ];
-
-  const handleCopy = (text: string, label: string) => {
+  const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    setCopiedField(label);
-    setTimeout(() => setCopiedField(null), 3000);
+    setCopiedId(text);
+    setTimeout(() => setCopiedId(null), 2500);
   };
 
-  const handleReceiptSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setReceiptSuccess(true);
-    setTimeout(() => {
-      setReceiptSuccess(false);
-      setReceiptName('');
-      setReceiptEmail('');
-      setReceiptTxn('');
-    }, 6000);
+  const getMethodIcon = (name: string) => {
+    switch (name) {
+      case 'Bank Transfer':
+        return <Building className="h-6 w-6" />;
+      case 'International':
+        return <Globe className="h-6 w-6" />;
+      default:
+        return <Smartphone className="h-6 w-6" />;
+    }
   };
-
-  const displayAmount = customAmount ? parseInt(customAmount) || 0 : selectedTier;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-14">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100">
-          <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" />
-          <span>Support Rural Health · सहयोग गर्नुहोस्</span>
+    <div>
+      <PageHeader
+        devanagariTitle="दान गर्नुहोस्"
+        title="Your Donation Creates Smiles"
+        subtitle="Every contribution — big or small — brings oral health care, education, and hope to communities that need it most. 100% of donations go directly to our field programs."
+        breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Donate' }]}
+        bgImage="https://images.pexels.com/photos/36423522/pexels-photo-36423522.jpeg?auto=compress&cs=tinysrgb&w=1920"
+      >
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#F4C542]/20 px-5 py-2 text-sm font-bold text-[#F4C542] backdrop-blur-md border border-[#F4C542]/40 shadow-sm">
+          <Heart className="h-4 w-4 fill-current" />
+          <span>100% of donations fund our grassroots field programs</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-          Invest in a Child’s Radiant Smile
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 font-nepali">
-          तपाईंको सानो सहयोगले विकट गाउँका बालबालिकालाई दाँतको असह्य पीडाबाट मुक्ति दिन सक्छ।
-        </p>
-      </div>
+      </PageHeader>
 
-      {/* 1. TIER CALCULATOR */}
-      <div className="space-y-6">
-        <div className="text-center max-w-xl mx-auto">
-          <h2 className="text-xl font-bold text-slate-900">Select Your Giving Tier</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Choose an amount or enter a custom sum. 89.4% directly funds clinical supplies and medications.
-          </p>
-        </div>
+      {/* 1. WHAT YOUR DONATION DOES */}
+      <section className="section-padding">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Your Impact"
+            title="What Your Donation Does"
+            subtitle="See exactly how your contribution translates into real, tangible impact in the mountains and rural schools."
+          />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {tiers.map((tier) => (
-            <div
-              key={tier.amount}
-              onClick={() => {
-                setSelectedTier(tier.amount);
-                setCustomAmount('');
-              }}
-              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
-                selectedTier === tier.amount && !customAmount
-                  ? 'bg-teal-50/70 border-[#16A396] ring-2 ring-[#16A396]/20 shadow-sm'
-                  : 'bg-white border-slate-200/80 hover:border-slate-300'
-              }`}
-            >
-              <div>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-black text-slate-900 tabular-nums">
-                    रू {tier.amount.toLocaleString()}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-400">{tier.usd}</span>
-                </div>
-                <h4 className="text-sm font-bold text-[#16A396] mt-1">{tier.title}</h4>
-                <div className="text-xs text-slate-500 font-nepali">{tier.nepaliTitle}</div>
-                <p className="text-xs text-slate-600 mt-2.5 leading-relaxed">{tier.desc}</p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 text-xs font-semibold flex items-center justify-between">
-                <span className={selectedTier === tier.amount && !customAmount ? 'text-[#16A396]' : 'text-slate-400'}>
-                  {selectedTier === tier.amount && !customAmount ? 'Selected Tier' : 'Select Tier'}
-                </span>
-                <Heart
-                  className={`w-3.5 h-3.5 ${
-                    selectedTier === tier.amount && !customAmount
-                      ? 'text-rose-500 fill-current'
-                      : 'text-slate-300'
-                  }`}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Custom Amount input */}
-        <div className="max-w-md mx-auto bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center gap-3">
-          <span className="text-xs font-bold text-slate-700 whitespace-nowrap">Custom Amount:</span>
-          <div className="relative flex-1">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">रू</span>
-            <input
-              type="number"
-              min="100"
-              value={customAmount}
-              onChange={(e) => setCustomAmount(e.target.value)}
-              placeholder="e.g. 5000"
-              className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#16A396]"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 2. PAYMENT METHODS CHANNELS */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-10 shadow-sm space-y-8">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider">
-            <CreditCard className="w-3.5 h-3.5" />
-            <span>Direct Giving Channels</span>
-          </div>
-          <h3 className="text-2xl font-bold text-slate-900 mt-1">Official Donation Channels</h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            100% of donations are deposited directly into Miles for Smiles Nepal non-profit bank and merchant accounts.
-          </p>
-        </div>
-
-        {/* Channel Selector Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 bg-slate-100 rounded-2xl">
-          <button
-            onClick={() => setSelectedMethod('esewa')}
-            className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              selectedMethod === 'esewa'
-                ? 'bg-emerald-600 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <span>eSewa</span>
-          </button>
-
-          <button
-            onClick={() => setSelectedMethod('khalti')}
-            className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              selectedMethod === 'khalti'
-                ? 'bg-purple-700 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <span>Khalti</span>
-          </button>
-
-          <button
-            onClick={() => setSelectedMethod('bank')}
-            className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              selectedMethod === 'bank'
-                ? 'bg-[#16A396] text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <span>Bank Transfer</span>
-          </button>
-
-          <button
-            onClick={() => setSelectedMethod('international')}
-            className={`py-2.5 px-3 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              selectedMethod === 'international'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
-            }`}
-          >
-            <span>International</span>
-          </button>
-        </div>
-
-        {/* Channel Detail Views */}
-        <div className="pt-2">
-          {selectedMethod === 'esewa' && (
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-              <div className="md:col-span-5 flex flex-col items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                {/* Simulated eSewa QR Code */}
-                <div className="w-48 h-48 bg-white p-3 rounded-2xl border-2 border-emerald-600 shadow-xs flex flex-col items-center justify-center relative">
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-slate-900">
-                    <rect x="0" y="0" width="30" height="30" fill="currentColor" />
-                    <rect x="5" y="5" width="20" height="20" fill="white" />
-                    <rect x="10" y="10" width="10" height="10" fill="currentColor" />
-                    
-                    <rect x="70" y="0" width="30" height="30" fill="currentColor" />
-                    <rect x="75" y="5" width="20" height="20" fill="white" />
-                    <rect x="80" y="10" width="10" height="10" fill="currentColor" />
-
-                    <rect x="0" y="70" width="30" height="30" fill="currentColor" />
-                    <rect x="5" y="75" width="20" height="20" fill="white" />
-                    <rect x="10" y="80" width="10" height="10" fill="currentColor" />
-
-                    <rect x="38" y="38" width="24" height="24" fill="#059669" rx="4" />
-                    <text x="50" y="54" fontSize="10" fill="white" fontWeight="bold" textAnchor="middle">eSewa</text>
-                  </svg>
-                </div>
-                <span className="text-xs font-bold text-emerald-700 mt-3">Scan via eSewa App</span>
-                <span className="text-[11px] text-slate-500">Suggested: NPR {displayAmount.toLocaleString()}</span>
-              </div>
-
-              <div className="md:col-span-7 space-y-4 text-xs sm:text-sm">
-                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                  <span className="text-xs font-bold text-emerald-800 uppercase block">Verified Merchant Account</span>
-                  <div className="text-base font-bold text-slate-900 mt-1">Miles for Smiles Nepal</div>
-                  <div className="text-slate-600 mt-0.5 font-nepali">मुस्कानको लागि पाइला नेपाल</div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <div>
-                      <span className="text-xs text-slate-500 block">eSewa ID / Registered Mobile:</span>
-                      <span className="font-mono font-bold text-slate-900">9841000000</span>
-                    </div>
-                    <button
-                      onClick={() => handleCopy('9841000000', 'esewa')}
-                      className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                    >
-                      {copiedField === 'esewa' ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5 text-slate-500" />
-                          <span>Copy ID</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <div>
-                      <span className="text-xs text-slate-500 block">Remarks / Purpose:</span>
-                      <span className="font-semibold text-slate-800">Child Dental Camp Support</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {selectedMethod === 'khalti' && (
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-              <div className="md:col-span-5 flex flex-col items-center p-6 bg-slate-50 rounded-2xl border border-slate-200 text-center">
-                {/* Simulated Khalti QR Code */}
-                <div className="w-48 h-48 bg-white p-3 rounded-2xl border-2 border-purple-700 shadow-xs flex flex-col items-center justify-center relative">
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-slate-900">
-                    <rect x="0" y="0" width="30" height="30" fill="currentColor" />
-                    <rect x="5" y="5" width="20" height="20" fill="white" />
-                    <rect x="10" y="10" width="10" height="10" fill="currentColor" />
-                    
-                    <rect x="70" y="0" width="30" height="30" fill="currentColor" />
-                    <rect x="75" y="5" width="20" height="20" fill="white" />
-                    <rect x="80" y="10" width="10" height="10" fill="currentColor" />
-
-                    <rect x="0" y="70" width="30" height="30" fill="currentColor" />
-                    <rect x="5" y="75" width="20" height="20" fill="white" />
-                    <rect x="10" y="80" width="10" height="10" fill="currentColor" />
-
-                    <rect x="36" y="38" width="28" height="24" fill="#6B21A8" rx="4" />
-                    <text x="50" y="54" fontSize="9" fill="white" fontWeight="bold" textAnchor="middle">Khalti</text>
-                  </svg>
-                </div>
-                <span className="text-xs font-bold text-purple-700 mt-3">Scan via Khalti App</span>
-                <span className="text-[11px] text-slate-500">Target Amount: NPR {displayAmount.toLocaleString()}</span>
-              </div>
-
-              <div className="md:col-span-7 space-y-4 text-xs sm:text-sm">
-                <div className="p-4 bg-purple-50 rounded-2xl border border-purple-100">
-                  <span className="text-xs font-bold text-purple-800 uppercase block">Registered Khalti ID</span>
-                  <div className="text-base font-bold text-slate-900 mt-1">Miles for Smiles Nepal</div>
-                  <div className="text-slate-600 mt-0.5 font-nepali">मुस्कानको लागि पाइला</div>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <div>
-                      <span className="text-xs text-slate-500 block">Khalti ID / Number:</span>
-                      <span className="font-mono font-bold text-slate-900">9841000000</span>
-                    </div>
-                    <button
-                      onClick={() => handleCopy('9841000000', 'khalti')}
-                      className="px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-                    >
-                      {copiedField === 'khalti' ? (
-                        <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                          <span>Copied</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3.5 h-3.5 text-slate-500" />
-                          <span>Copy ID</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                    <span className="text-xs text-slate-500 block">Instant Verification:</span>
-                    <span className="text-xs text-slate-700">Immediate digital confirmation on Khalti wallet</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {selectedMethod === 'bank' && (
-            <div className="space-y-4 text-xs sm:text-sm">
-              <div className="p-4 bg-teal-50 rounded-2xl border border-teal-100 flex items-center justify-between">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {DONATION_TIERS.map((tier) => (
+              <div
+                key={tier.amount}
+                className="h-full rounded-3xl bg-white p-7 text-center shadow-card transition-all hover:shadow-card-hover hover:-translate-y-1.5 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex flex-col justify-between"
+              >
                 <div>
-                  <span className="text-xs font-bold text-[#16A396] uppercase block">Official NGO Bank Account</span>
-                  <div className="text-base font-bold text-slate-900 mt-1">Nepal Bank Limited / Nabil Bank</div>
-                </div>
-                <Building className="w-8 h-8 text-[#16A396] opacity-70" />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-slate-500 block">Account Name:</span>
-                    <strong className="text-slate-900">MILES FOR SMILES NEPAL</strong>
-                  </div>
-                  <button
-                    onClick={() => handleCopy('MILES FOR SMILES NEPAL', 'accName')}
-                    className="p-1.5 hover:bg-slate-200 rounded text-slate-500"
-                    title="Copy Name"
+                  <div
+                    className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${tier.color} text-white shadow-soft mb-5`}
                   >
-                    {copiedField === 'accName' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-slate-500 block">Account Number:</span>
-                    <strong className="text-slate-900 font-mono">0120100098412001</strong>
+                    <Heart className="h-8 w-8 fill-white" />
                   </div>
-                  <button
-                    onClick={() => handleCopy('0120100098412001', 'accNum')}
-                    className="p-1.5 hover:bg-slate-200 rounded text-slate-500"
-                    title="Copy Account Number"
-                  >
-                    {copiedField === 'accNum' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
-                  <span className="text-xs text-slate-500 block">Branch & Location:</span>
-                  <strong className="text-slate-900">Maharajgunj Branch, Kathmandu, Nepal</strong>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
-                  <div>
-                    <span className="text-xs text-slate-500 block">SWIFT / BIC Code:</span>
-                    <strong className="text-slate-900 font-mono">NEBLNPKA</strong>
+                  <div className="font-display text-3xl font-extrabold text-slate-900 dark:text-white">
+                    {tier.amount}
                   </div>
-                  <button
-                    onClick={() => handleCopy('NEBLNPKA', 'swift')}
-                    className="p-1.5 hover:bg-slate-200 rounded text-slate-500"
-                    title="Copy SWIFT"
-                  >
-                    {copiedField === 'swift' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                  </button>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    {tier.desc}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+                  <span className="text-xs font-semibold text-[#0f7069] dark:text-[#2dd4bf]">
+                    Direct Field Program Support
+                  </span>
                 </div>
               </div>
-            </div>
-          )}
-
-          {selectedMethod === 'international' && (
-            <div className="space-y-4 text-xs sm:text-sm">
-              <div className="p-5 bg-slate-900 text-white rounded-2xl space-y-2">
-                <div className="flex items-center gap-2 text-xs font-semibold text-[#38C8BA] uppercase tracking-wider">
-                  <Globe className="w-4 h-4" />
-                  <span>International Wire & Diaspora Giving</span>
-                </div>
-                <h4 className="text-base font-bold text-white">Supporting from Abroad (USA, UK, Australia, EU)</h4>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  International donors can wire funds directly to our SWIFT code or partner via our US 501(c)(3) fiscal sponsor portal (PayPal Giving Fund & GlobalGiving affiliate).
-                </p>
-              </div>
-
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                <span className="text-xs font-bold text-slate-800 uppercase block">International Wire Routing Instructions:</span>
-                <p className="text-xs text-slate-600">
-                  Beneficiary: <strong>MILES FOR SMILES NEPAL</strong><br />
-                  Intermediary Bank: Standard Chartered Bank / JPMorgan Chase<br />
-                  Beneficiary Bank: Nepal Bank Limited, Kathmandu<br />
-                  SWIFT: <strong>NEBLNPKA</strong><br />
-                  Account No: <strong>0120100098412001</strong>
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 3. RECEIPT & TAX EXEMPTION REQUEST */}
-      <div className="bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-200 max-w-2xl mx-auto space-y-4">
-        <div className="flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wide">
-          <Receipt className="w-4 h-4" />
-          <span>Official Tax Exemption Receipt</span>
-        </div>
-        <h3 className="text-lg font-bold text-slate-900">Request Your Official Donation Voucher</h3>
-        <p className="text-xs text-slate-600">
-          Already made a transfer via eSewa, Khalti, or Bank? Enter your transaction code below to receive an official stamp-signed receipt.
-        </p>
-
-        {receiptSuccess ? (
-          <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2 font-medium">
-            <Check className="w-4 h-4 text-emerald-600" />
-            <span>Receipt request submitted! Our accounts team will email your receipt within 24 hours.</span>
+            ))}
           </div>
-        ) : (
-          <form onSubmit={handleReceiptSubmit} className="space-y-3 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input
-                type="text"
-                required
-                value={receiptName}
-                onChange={(e) => setReceiptName(e.target.value)}
-                placeholder="Full Donor / Company Name"
-                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-              />
-              <input
-                type="email"
-                required
-                value={receiptEmail}
-                onChange={(e) => setReceiptEmail(e.target.value)}
-                placeholder="Receipt Email Address"
-                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-              />
+        </div>
+      </section>
+
+      {/* 2. PAYMENT METHODS */}
+      <section className="section-padding bg-slate-50 dark:bg-slate-800/50">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Ways to Give"
+            title="Official Donation Methods"
+            subtitle="Choose the payment method that works best for you. For international supporters, options are available below."
+          />
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {DONATION_METHODS.map((method) => (
+              <div
+                key={method.name}
+                className="rounded-3xl bg-white p-7 sm:p-8 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex flex-col justify-between"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-[#1AAE9F] dark:bg-slate-700 dark:text-teal-300">
+                    {getMethodIcon(method.name)}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      {method.name}
+                    </h3>
+                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                      {method.desc}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4 dark:bg-slate-700/80 border border-slate-100 dark:border-slate-600">
+                  <code className="text-sm font-semibold text-slate-800 dark:text-slate-100 break-all select-all">
+                    {method.id}
+                  </code>
+                  <button
+                    onClick={() => handleCopy(method.id)}
+                    className="flex-shrink-0 flex items-center gap-1 text-xs font-bold text-[#1AAE9F] hover:text-[#0f7069] dark:text-[#2dd4bf] px-3 py-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-600 transition-colors cursor-pointer"
+                    aria-label="Copy identifier"
+                  >
+                    {copiedId === method.id ? (
+                      <>
+                        <Check className="h-4 w-4 text-emerald-500" />
+                        <span className="text-emerald-500">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Acknowledgement instruction box */}
+          <div className="mt-10 rounded-3xl bg-amber-50 dark:bg-amber-900/20 p-6 sm:p-8 text-center border border-amber-200/60 dark:border-amber-700/40 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base text-slate-800 dark:text-slate-200 leading-relaxed">
+              After making your donation, please email us at{' '}
+              <a
+                href="mailto:info@milesforsmilesnepal.org"
+                className="font-bold text-[#0f7069] dark:text-[#2dd4bf] underline hover:no-underline"
+              >
+                info@milesforsmilesnepal.org
+              </a>{' '}
+              or send a screenshot via WhatsApp with your name and transaction details so our accounting team can issue an official tax-deductible receipt and update our transparency registry.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. OUR FINANCIAL PROMISE */}
+      <section className="section-padding">
+        <div className="container-app">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div className="space-y-4">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1AAE9F]">
+                Our Promise
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Every rupee is rigorously accounted for
+              </h2>
+              <p className="text-base text-slate-600 dark:text-slate-300 leading-relaxed pt-2">
+                We are committed to absolute financial transparency. Our annual reports and independent audits show exactly where every contribution is allocated — from sterile autoclaves and dental composites to mountain jeep logistics and children's fluoride kits.
+              </p>
+              <div className="pt-2 flex items-center gap-2 text-sm font-bold text-teal-800 dark:text-teal-300">
+                <ShieldCheck className="h-5 w-5 text-[#1AAE9F]" />
+                <span>Zero administrative leakage · 100% field deployment</span>
+              </div>
             </div>
-            <input
-              type="text"
-              required
-              value={receiptTxn}
-              onChange={(e) => setReceiptTxn(e.target.value)}
-              placeholder="Transaction ID / Reference Number (e.g. eSewa Txn ID #982184)"
-              className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-            />
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-[#16A396] hover:bg-[#0E786E] text-white font-bold rounded-xl transition-colors cursor-pointer shadow-xs"
-            >
-              Generate Official Receipt Request
-            </button>
-          </form>
-        )}
-      </div>
+
+            <div className="rounded-3xl bg-gradient-to-br from-[#0f7069] to-[#073936] p-8 sm:p-10 text-white shadow-card border border-teal-500/20 space-y-4">
+              <h3 className="text-2xl font-bold">Donor Recognition Tiers</h3>
+              <ul className="space-y-3 text-sm text-slate-200">
+                <li className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-[#F4C542]" />
+                  <span><strong>Smile Supporter:</strong> Up to Rs 10,000 — Certificate of Appreciation & Newsletter updates</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-[#F4C542]" />
+                  <span><strong>Smile Champion:</strong> Rs 10,000 to Rs 50,000 — Dedicated camp impact photo report</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-[#F4C542]" />
+                  <span><strong>Smile Patron:</strong> Rs 50,000+ — Project naming rights and annual audit disclosure</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

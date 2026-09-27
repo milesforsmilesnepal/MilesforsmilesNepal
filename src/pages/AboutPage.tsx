@@ -1,291 +1,290 @@
 import React from 'react';
-import { PageId } from '../types';
-import { TEAM_MEMBERS, HERO_IMAGE, KARNALI_IMAGE, MFSN_LOGO_IMAGE } from '../data/organizationData';
-import { MFSNLogo, MFSN_BRAND_COLOR } from '../components/MFSNLogo';
-import { ShieldCheck, Heart, Users, Sparkles, CheckCircle2, ArrowRight, Mountain, Smile, Compass, Palette } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PageHeader } from '../components/PageHeader';
+import { SectionHeader } from '../components/SectionHeader';
+import { CORE_VALUES, INITIAL_MILESTONES } from '../data/boltData';
+import {
+  Eye,
+  Target,
+  Heart,
+  Users,
+  ShieldCheck,
+  Sparkles,
+  Mountain,
+  Globe,
+  Flag,
+  ArrowRight,
+  Quote,
+} from 'lucide-react';
 
-interface AboutPageProps {
-  onNavigate: (page: PageId) => void;
-}
+export const AboutPage: React.FC = () => {
+  const getCoreValueIcon = (title: string) => {
+    switch (title) {
+      case 'Compassion':
+        return <Heart className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'Youth-Led':
+        return <Users className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'Transparency':
+        return <ShieldCheck className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'Hope':
+        return <Sparkles className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'Collaboration':
+        return <Globe className="h-6 w-6 text-[#1AAE9F]" />;
+      case 'Excellence':
+        return <Target className="h-6 w-6 text-[#1AAE9F]" />;
+      default:
+        return <Heart className="h-6 w-6 text-[#1AAE9F]" />;
+    }
+  };
 
-export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
+  const getMilestoneIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'flag':
+        return <Flag className="h-5 w-5 text-[#F4C542]" />;
+      case 'sparkles':
+        return <Sparkles className="h-5 w-5 text-[#F4C542]" />;
+      case 'mountain':
+        return <Mountain className="h-5 w-5 text-[#F4C542]" />;
+      case 'globe':
+        return <Globe className="h-5 w-5 text-[#F4C542]" />;
+      case 'users':
+        return <Users className="h-5 w-5 text-[#F4C542]" />;
+      default:
+        return <Heart className="h-5 w-5 text-[#F4C542]" />;
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
-      {/* 1. Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100">
-          <Sparkles className="w-3.5 h-3.5 text-[#F4C542]" />
-          <span>Our Identity & Purpose · हाम्रो परिचय</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight text-balance">
-          About Miles for Smiles Nepal
-        </h1>
-        <p className="text-lg text-slate-600 font-nepali">
-          मुस्कानको लागि पाइला नेपाल: स्वास्थ्य सेवाबाट वञ्चित समुदायसम्म पुग्ने युवा दन्त विद्यार्थीहरूको महाअभियान।
-        </p>
-      </div>
+    <div>
+      <PageHeader
+        devanagariTitle="हाम्रो बारेमा"
+        title="About Miles for Smiles Nepal"
+        subtitle="A youth-led movement of dental students and young professionals committed to reaching underserved communities across Nepal with oral health care, education, and compassion."
+        breadcrumb={[{ label: 'Home', to: '/' }, { label: 'About' }]}
+        bgImage="https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=1920"
+      />
 
-      {/* 2. Founding Story Narrative */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div className="lg:col-span-7 space-y-5">
-          <div className="text-xs font-bold text-[#16A396] uppercase tracking-wider">
-            The Origin Story
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
-            Why Dental Students Decided to Walk Where Roads End
-          </h2>
-          <p className="text-sm text-slate-700 leading-relaxed">
-            In Nepal, over <strong>90% of certified dental professionals</strong> are clustered in Kathmandu and major urban centers. Meanwhile, more than 75% of the rural population has never visited a dentist. In districts like Humla and Jumla, a single untreated tooth cavity often leads to chronic absenteeism, facial cellulitis, severe infection, and agonizing pain that persists for years.
-          </p>
-          <p className="text-sm text-slate-700 leading-relaxed">
-            In 2022, a tight-knit cohort of undergraduate dental students at Tribhuvan University Institute of Medicine (IOM) decided they could not wait until graduation to act. Pooling pocket money, soliciting donated materials from senior faculty, and packing portable handpieces into backpacks, they embarked on their first camp in the hills of Helambu.
-          </p>
-          <p className="text-sm text-slate-700 leading-relaxed">
-            Today, <strong>Miles for Smiles Nepal (मुस्कानको लागि पाइला)</strong> is a legally recognized, youth-led nongovernmental organization that has mobilized over 400 dental and medical volunteers across 14 remote districts.
-          </p>
-          <div className="pt-2 flex items-center gap-4 text-xs font-semibold text-slate-700">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              100% Student-Driven
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Zero Executive Salaries
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              Clinical Integrity First
-            </span>
-          </div>
-        </div>
-
-        <div className="lg:col-span-5 relative">
-          <div className="rounded-3xl overflow-hidden shadow-lg border border-slate-200 aspect-4/3">
-            <img
-              src={KARNALI_IMAGE}
-              alt="Dental students volunteering in remote Nepal"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="mt-3 text-center text-xs text-slate-500 italic">
-            Volunteers treating school children at a temporary field clinic in Upper Karnali.
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Mission, Vision, and Values Triad */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-50 text-[#16A396] flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-[#16A396]" />
-          </div>
-          <h3 className="text-lg font-bold text-slate-900">Our Vision</h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            A Nepal where no child spends a sleepless night from dental pain, and where every citizen, regardless of geography or economic status, has access to quality oral healthcare.
-          </p>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-[#F4C542] flex items-center justify-center">
-            <Heart className="w-5 h-5 text-amber-600" />
-          </div>
-          <h3 className="text-lg font-bold text-slate-900">Our Mission</h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            To reach underserved mountain and rural communities with free dental treatments, preventive fluoride programs, comprehensive school oral education, and adolescent menstrual dignity.
-          </p>
-        </div>
-
-        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <ShieldCheck className="w-5 h-5 text-emerald-600" />
-          </div>
-          <h3 className="text-lg font-bold text-slate-900">Uncompromising Ethics</h3>
-          <p className="text-xs text-slate-600 leading-relaxed">
-            We adhere strictly to international atraumatic restorative treatment standards, zero waste, ethical consent, and 100% transparent public accounting.
-          </p>
-        </div>
-      </div>
-
-      {/* Official Brand Identity & Emblem Showcase */}
-      <div className="bg-gradient-to-br from-teal-50/80 via-white to-sky-50/50 p-8 sm:p-10 rounded-3xl border border-teal-200/60 shadow-xs space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-5 flex flex-col items-center text-center">
-            <div className="relative group p-3 bg-white rounded-3xl shadow-md border border-teal-100 max-w-xs w-full">
-              <div className="w-full aspect-square rounded-2xl overflow-hidden bg-[#16A396] flex items-center justify-center relative shadow-inner">
-                <img
-                  src={MFSN_LOGO_IMAGE}
-                  alt="Miles for Smiles Nepal (MFSN) Main Brand Logo"
-                  className="w-full h-full object-cover"
-                />
+      {/* 1. OUR STORY */}
+      <section className="section-padding">
+        <div className="container-app">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            {/* Story text */}
+            <div className="space-y-6">
+              <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1AAE9F]">
+                Our Story
               </div>
-              <div className="mt-3 text-center">
-                <span className="text-xs font-bold text-slate-800 tracking-wide uppercase block">
-                  Official Registered Emblem
-                </span>
-                <span className="text-[11px] text-teal-700 font-semibold font-nepali">
-                  मुस्कानको लागि पाइला नेपाल · Estd. 2024
-                </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                From a classroom dream to a nationwide movement
+              </h2>
+
+              <div className="space-y-4 text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p>
+                  Miles for Smiles Nepal began with a simple observation by a group of dental students: millions of people in rural Nepal have no access to dental care. Children grow up with untreated toothaches, communities lack basic oral hygiene knowledge, and the nearest dentist may be days of rugged travel away.
+                </p>
+                <p>
+                  What started as small outreach programs in Kathmandu schools has grown into a movement reaching thousands across multiple districts — from the remote mountains of Karnali to flood-affected communities in Nawalparasi. Along the way, we've discovered that oral health is not just about teeth — it's about dignity, access, and showing people that they matter.
+                </p>
+                <p>
+                  Today, we are a network of dental students, dentists, medical professionals, and volunteers united by a belief that healthcare is a right, not a privilege. And we're just getting started.
+                </p>
               </div>
             </div>
-          </div>
 
-          <div className="lg:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-wider bg-teal-100/60 px-3 py-1 rounded-full">
-              <Palette className="w-3.5 h-3.5" />
-              <span>Brand Identity & Design Philosophy</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              The Symbolism of the MFSN Logo
-            </h2>
-            <p className="text-sm text-slate-700 leading-relaxed">
-              Designed to embody the spirit of student dental volunteers scaling steep Himalayan ridges to heal pain, our logo represents our unwavering commitment to community health and compassion.
-            </p>
+            {/* Story photo with badge */}
+            <div className="relative">
+              <img
+                src="https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=800"
+                alt="Dental outreach in Nepal"
+                className="w-full rounded-3xl object-cover shadow-card aspect-[4/3]"
+              />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                  <Mountain className="w-4 h-4 text-[#16A396]" />
-                  <span>Himalayan Ridges ('M')</span>
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  The sharp mountain cutouts in the initial 'M' signify Nepal's rugged geography and our pledge to walk where motorable roads end.
-                </p>
-              </div>
-
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                  <Smile className="w-4 h-4 text-[#16A396]" />
-                  <span>Molar & Smiling Arc ('S')</span>
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  The tooth wave embedded in the 'S' and the smiling arc reflect restorative dental care and the enduring happiness of every child treated.
-                </p>
-              </div>
-
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                  <div className="w-3.5 h-3.5 rounded-full bg-[#16A396]" />
-                  <span>Teal Turquoise (#16A396)</span>
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Our primary brand color harmonizes healthcare hygiene, mountain glacial rivers, fresh vitality, and youthful optimism.
-                </p>
-              </div>
-
-              <div className="p-4 bg-white rounded-2xl border border-slate-200/80 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-                  <Compass className="w-4 h-4 text-[#16A396]" />
-                  <span>"Reaching the Unreached"</span>
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Our driving operational principle: leaving no remote village, school, or community behind.
-                </p>
+              <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-[#0f7069] p-6 text-white shadow-lg md:block border border-teal-400/30">
+                <div className="font-display text-3xl font-extrabold text-[#F4C542]">5+</div>
+                <div className="text-xs font-semibold text-teal-100">Districts Served</div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 4. Leadership & Volunteer Committee */}
-      <div className="space-y-8">
-        <div className="text-center max-w-2xl mx-auto">
-          <span className="text-xs font-bold text-[#16A396] uppercase tracking-widest">
-            Youth Leadership Team
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-            Meet the Dental Advocates Behind the Mission
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 mt-2">
-            Dental surgeons, student leads, and logistics specialists leading every mountain expedition.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {TEAM_MEMBERS.map((member, i) => (
-            <div
-              key={i}
-              className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between"
-            >
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#16A396] to-[#38C8BA] text-white flex items-center justify-center text-lg font-bold mb-4 shadow-xs">
-                  {member.name.split(' ').slice(-1)[0][0]}
-                </div>
-                <h3 className="text-base font-bold text-slate-900">{member.name}</h3>
-                <span className="text-xs text-slate-500 font-nepali block">{member.nepaliName}</span>
-                <span className="text-xs font-semibold text-[#16A396] block mt-1">{member.role}</span>
-                <span className="text-[11px] text-slate-500 block mb-3">{member.subtext}</span>
-                <p className="text-xs text-slate-600 leading-relaxed">{member.bio}</p>
+      {/* 2. VISION & MISSION CARDS */}
+      <section className="section-padding bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800/50">
+        <div className="container-app">
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* Vision */}
+            <div className="h-full rounded-3xl bg-gradient-to-br from-[#0f7069] to-[#073936] p-8 sm:p-10 text-white shadow-card border border-teal-500/20">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                <Eye className="h-7 w-7 text-white" />
               </div>
+              <h3 className="mt-6 text-2xl font-bold text-white">Our Vision</h3>
+              <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-200">
+                A Nepal where every person — regardless of geography, income, or circumstance — has access to quality oral health care and the knowledge to maintain a healthy smile for life.
+              </p>
+            </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-                <span>Kathmandu, Nepal</span>
-                <span className="text-emerald-700 font-medium">Active Field Lead</span>
+            {/* Mission */}
+            <div className="h-full rounded-3xl bg-gradient-to-br from-[#1AAE9F] to-[#148f84] p-8 sm:p-10 text-white shadow-card border border-teal-400/30">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                <Target className="h-7 w-7 text-white" />
+              </div>
+              <h3 className="mt-6 text-2xl font-bold text-white">Our Mission</h3>
+              <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-100">
+                To reach underserved and marginalized communities across Nepal with free dental treatment, oral health education, and humanitarian support — ensuring that geography, poverty, or lack of access never become barriers to a healthy smile.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. CORE VALUES */}
+      <section className="section-padding">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="What Guides Us"
+            title="Our Core Values"
+            subtitle="The principles that shape every decision we make and every community we serve."
+          />
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {CORE_VALUES.map((val) => (
+              <div
+                key={val.title}
+                className="group h-full rounded-2xl border border-slate-100 bg-white p-7 shadow-card transition-all hover:shadow-card-hover hover:-translate-y-1 dark:border-slate-700 dark:bg-slate-800"
+              >
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-[#1AAE9F] transition-all group-hover:bg-[#1AAE9F] group-hover:text-white dark:bg-slate-700 dark:text-teal-300">
+                  {getCoreValueIcon(val.title)}
+                </div>
+                <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+                  {val.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {val.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. FOUNDER'S MESSAGE */}
+      <section className="section-padding bg-gradient-to-b from-white to-slate-50 dark:from-slate-800/50 dark:to-slate-900">
+        <div className="container-app">
+          <div className="mx-auto max-w-4xl">
+            <div className="relative rounded-3xl bg-white p-8 sm:p-12 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              <Quote className="absolute top-6 right-6 h-16 w-16 text-slate-100 dark:text-slate-700 pointer-events-none" />
+
+              <div className="relative">
+                <div className="mb-3 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1AAE9F]">
+                  Founder's Message
+                </div>
+                <blockquote className="text-lg sm:text-xl leading-relaxed text-slate-700 dark:text-slate-200 italic">
+                  "When we started Miles for Smiles Nepal, we were just dental students with a simple belief: that every smile deserves care. Today, having reached thousands across some of Nepal's most remote communities, that belief has only grown stronger. We've seen firsthand that oral health is not a luxury — it's a fundamental part of human dignity. To every volunteer, donor, and partner who has walked this journey with us: thank you. Together, we are proving that young people can drive real, lasting change. And together, we will keep reaching the unreached."
+                </blockquote>
+
+                <div className="mt-8 flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1AAE9F] to-[#0f7069] text-xl font-bold text-white shadow-soft">
+                    M
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900 dark:text-white text-base">
+                      Founding Executive Committee
+                    </div>
+                    <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                      Miles for Smiles Nepal (मुस्कानको लागि पाइला नेपाल)
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* 5. Institutional Governance & Government Registration */}
-      <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 space-y-6">
-        <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold text-[#38C8BA] uppercase tracking-wider">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>Official NGO Certification & Audit Governance</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
-            Trust, Compliance & Full Financial Transparency
-          </h2>
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-            Miles for Smiles Nepal operates under the rigorous oversight of the Social Welfare Council of Nepal (Affiliation No: 53120) and is officially registered with the District Administration Office Kathmandu (Registration No: 58492/080). Our accounts are audited annually by registered chartered accountants and made accessible to every supporter.
-          </p>
-        </div>
+      {/* 5. YOUTH LEADERSHIP PILLARS */}
+      <section className="section-padding">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="Our Strength"
+            title="Youth Leadership"
+            subtitle="Young people are at the heart of everything we do — bringing energy, innovation, and an unwavering commitment to service."
+          />
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800 text-xs">
-          <div>
-            <div className="text-slate-400">PAN Registration</div>
-            <div className="text-sm font-bold text-white mt-0.5">618492019 (Inland Revenue Dept)</div>
-          </div>
-          <div>
-            <div className="text-slate-400">Executive Compensation</div>
-            <div className="text-sm font-bold text-emerald-400 mt-0.5">0.0% (Pure Volunteer Movement)</div>
-          </div>
-          <div>
-            <div className="text-slate-400">Public Audit Reports</div>
-            <button
-              onClick={() => onNavigate('reports')}
-              className="text-sm font-bold text-[#38C8BA] hover:underline mt-0.5 block cursor-pointer"
-            >
-              Download Financial Filings →
-            </button>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {[
+              {
+                title: 'Dental Students',
+                desc: 'The backbone of our organization — bringing clinical skills, fresh perspectives, and boundless energy to every camp and school visit.',
+              },
+              {
+                title: 'Young Dentists',
+                desc: 'Recent graduates and practicing professionals who mentor students, supervise clinical protocols, and lead complex procedures in the field.',
+              },
+              {
+                title: 'Multidisciplinary Volunteers',
+                desc: 'Photographers, designers, content creators, and general volunteers who amplify our mission, manage logistics, and drive operations.',
+              },
+            ].map((p) => (
+              <div
+                key={p.title}
+                className="h-full rounded-2xl bg-gradient-to-br from-teal-50 to-sky-50/50 p-8 dark:from-slate-800 dark:to-slate-800 border border-teal-100/50 dark:border-slate-700"
+              >
+                <h3 className="text-xl font-bold text-[#0f7069] dark:text-[#2dd4bf]">
+                  {p.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  {p.desc}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 6. Action Callout */}
-      <div className="p-8 bg-teal-50 rounded-3xl border border-teal-100 flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div>
-          <h3 className="text-xl font-bold text-slate-900">Want to partner with us or sponsor an expedition?</h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            We collaborate with dental colleges, community hospitals, Rotary clubs, and diaspora donors worldwide.
-          </p>
+      {/* 6. MILESTONES TIMELINE */}
+      <section className="section-padding bg-[#073936] text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
+
+        <div className="container-app relative z-10">
+          <SectionHeader
+            eyebrow="Milestones"
+            title="Our Journey So Far"
+            subtitle="Key moments in our evolution from a student initiative to a trusted NGO."
+          />
+
+          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {INITIAL_MILESTONES.map((m) => (
+              <div
+                key={m.id}
+                className="rounded-3xl bg-white/10 p-6 sm:p-7 backdrop-blur-md border border-white/10 hover:border-teal-400/40 transition-all hover:-translate-y-1"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="rounded-full bg-[#F4C542] px-3.5 py-1 text-xs font-extrabold text-[#472e00]">
+                    {m.year}
+                  </span>
+                  <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+                    {getMilestoneIcon(m.icon)}
+                  </div>
+                </div>
+
+                <h3 className="mt-4 text-xl font-bold text-white">
+                  {m.title}
+                </h3>
+
+                <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                  {m.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link to="/volunteer" className="btn-hope">
+              <span>Join Our Volunteer Movement</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <button
-            onClick={() => onNavigate('sponsors')}
-            className="px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold rounded-xl border border-slate-300 transition-colors"
-          >
-            Partner With Us
-          </button>
-          <button
-            onClick={() => onNavigate('volunteer')}
-            className="px-5 py-2.5 bg-[#16A396] hover:bg-[#0E786E] text-white text-xs font-semibold rounded-xl transition-colors shadow-xs"
-          >
-            Apply as Volunteer
-          </button>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };

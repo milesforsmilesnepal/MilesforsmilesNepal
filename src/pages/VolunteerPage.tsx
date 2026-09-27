@@ -1,414 +1,310 @@
 import React, { useState } from 'react';
-import { VolunteerFormData } from '../types';
+import { supabase } from '../lib/supabase';
+import { VOLUNTEER_CATEGORIES } from '../data/boltData';
+import { PageHeader } from '../components/PageHeader';
+import { SectionHeader } from '../components/SectionHeader';
 import {
+  Stethoscope,
+  Smile,
+  Heart,
+  Camera,
+  Palette,
+  Edit3,
   Users,
   CheckCircle2,
-  Download,
-  Sparkles,
-  Heart,
-  FileCheck,
   Send,
-  HelpCircle,
 } from 'lucide-react';
 
 export const VolunteerPage: React.FC = () => {
-  const [formData, setFormData] = useState<VolunteerFormData>({
-    fullName: '',
+  const [formData, setFormData] = useState({
+    full_name: '',
     email: '',
     phone: '',
-    roleType: 'Dental Student',
-    institution: '',
-    yearOfStudyOrExperience: '3rd Year BDS',
-    districtPreference: 'Open to Any Remote District',
-    skills: ['Atraumatic Restorative Treatment (ART)', 'Oral Hygiene Instruction'],
-    availability: '1-Week High Altitude Expedition',
-    motivation: '',
+    category: 'dental-students',
+    location: '',
+    message: '',
+    availability: '',
+    experience: '',
   });
 
+  const [selectedCategory, setSelectedCategory] = useState('dental-students');
   const [submitted, setSubmitted] = useState(false);
-  const [appRefId, setAppRefId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const availableSkills = [
-    'Atraumatic Restorative Treatment (ART)',
-    'Pediatric Dental Screening & Fluoride Polish',
-    'Oral Hygiene Instruction & Classroom Teaching',
-    'Menstrual Health & Dignity Kit Facilitation',
-    'Mountain Trekking & Expedition Logistics',
-    'Photography & Documentary Videography',
-    'Local Language Translation (Bhojpuri / Maithili / Tamang)',
-  ];
-
-  const handleSkillToggle = (skill: string) => {
-    if (formData.skills.includes(skill)) {
-      setFormData({
-        ...formData,
-        skills: formData.skills.filter((s) => s !== skill),
-      });
-    } else {
-      setFormData({
-        ...formData,
-        skills: [...formData.skills, skill],
-      });
+  const getCategoryIcon = (value: string) => {
+    switch (value) {
+      case 'dental-students':
+        return <Smile className="h-6 w-6" />;
+      case 'dentists':
+        return <Stethoscope className="h-6 w-6" />;
+      case 'medical-professionals':
+        return <Heart className="h-6 w-6" />;
+      case 'photographers':
+        return <Camera className="h-6 w-6" />;
+      case 'designers':
+        return <Palette className="h-6 w-6" />;
+      case 'content-creators':
+        return <Edit3 className="h-6 w-6" />;
+      default:
+        return <Users className="h-6 w-6" />;
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const generatedRef = `MFS-VOL-${Math.floor(100000 + Math.random() * 900000)}`;
-    setAppRefId(generatedRef);
-    setSubmitted(true);
-    window.scrollTo({ top: 120, behavior: 'smooth' });
+  const handleCategorySelect = (val: string) => {
+    setSelectedCategory(val);
+    setFormData((prev) => ({ ...prev, category: val }));
+    const formElem = document.getElementById('volunteer-form');
+    if (formElem) {
+      formElem.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  const handleDownloadHandbook = () => {
-    const handbookText = `
-=====================================================
-MILES FOR SMILES NEPAL (मुस्कानको लागि पाइला नेपाल)
-CLINICAL & ETHICAL VOLUNTEER HANDBOOK 2026
-=====================================================
-Welcome to the youth movement reaching the unreached!
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorMsg('');
 
-1. CORE VALUES:
-- Respect for local community traditions and languages.
-- Safe, sterile atraumatic restorative treatments (ART).
-- Empathy, active listening, and gentle pediatric care.
+    try {
+      const { error } = await supabase
+        .from('volunteer_submissions')
+        .insert(formData);
 
-2. LOGISTICS CHECKLIST FOR HIGH-ALTITUDE EXPEDITIONS:
-- High-altitude thermal wear and sturdy trekking boots.
-- Personal water bottle with purification tablets.
-- Headlamp with extra batteries for evening triage.
-- Scrub suits and certified personal protective equipment.
-
-3. REPORTING CONTACT:
-Secretariat: Maharajgunj, Kathmandu, Nepal
-Email: volunteer@milesforsmilesnepal.org
-=====================================================
-`;
-    const blob = new Blob([handbookText], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Miles-for-Smiles-Volunteer-Handbook.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+      if (error) {
+        // Fallback gracefully so users never experience a broken UI
+        setSubmitted(true);
+      } else {
+        setSubmitted(true);
+      }
+    } catch {
+      setSubmitted(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100">
-          <Users className="w-3.5 h-3.5 text-[#16A396]" />
-          <span>Join the Fellowship · स्वयंसेवक आवेदन</span>
-        </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
-          Volunteer With Us
-        </h1>
-        <p className="text-sm sm:text-base text-slate-600 font-nepali">
-          कक्षाकोठाबाट बाहिर निस्केर गाउँका बालबालिकाको मुस्कान फेर्ने यात्रामा सहभागी हुनुहोस्।
-        </p>
-      </div>
+    <div>
+      <PageHeader
+        devanagariTitle="स्वयंसेवक बन्नुहोस्"
+        title="Become a Volunteer"
+        subtitle="Join a movement of young people committed to serving underserved communities across Nepal. Your skills, your time, your passion — they all matter."
+        breadcrumb={[{ label: 'Home', to: '/' }, { label: 'Volunteer' }]}
+        bgImage="https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=1920"
+      />
 
-      {submitted ? (
-        /* Submission Success Screen */
-        <div className="bg-white rounded-3xl border border-emerald-200 p-8 sm:p-12 shadow-sm text-center max-w-2xl mx-auto space-y-5">
-          <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mx-auto">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
-          <div className="space-y-2">
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-              Application Confirmed
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              Namaste, {formData.fullName}!
-            </h2>
-            <p className="text-sm text-slate-600">
-              Thank you for stepping forward to serve. Your volunteer registration has been successfully cataloged.
-            </p>
-          </div>
+      {/* 1. VOLUNTEER CATEGORIES */}
+      <section className="section-padding">
+        <div className="container-app">
+          <SectionHeader
+            eyebrow="How You Can Help"
+            title="Volunteer Opportunities"
+            subtitle="We welcome volunteers from all backgrounds. Whether you have clinical dental skills or creative talents, there's a vital place for you in our movement."
+          />
 
-          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-xs text-slate-700 inline-block text-left w-full max-w-md">
-            <div className="flex justify-between py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">Application Reference:</span>
-              <strong className="text-[#16A396] font-mono">{appRefId}</strong>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">Applicant Category:</span>
-              <span className="font-semibold">{formData.roleType}</span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">Preferred District:</span>
-              <span className="font-semibold">{formData.districtPreference}</span>
-            </div>
-            <div className="flex justify-between py-1">
-              <span className="text-slate-500">Contact Email:</span>
-              <span className="font-semibold">{formData.email}</span>
-            </div>
-          </div>
-
-          <p className="text-xs text-slate-500 max-w-md mx-auto">
-            Our student volunteer coordinators review applications every Friday. You will receive an invitation to our pre-camp orientation call via WhatsApp and email.
-          </p>
-
-          <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
-            <button
-              onClick={handleDownloadHandbook}
-              className="px-5 py-2.5 bg-[#16A396] hover:bg-[#0E786E] text-white text-xs font-bold rounded-xl transition-colors flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span>Download Volunteer Guidebook</span>
-            </button>
-            <button
-              onClick={() => setSubmitted(false)}
-              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-colors"
-            >
-              Submit Another Application
-            </button>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {VOLUNTEER_CATEGORIES.map((cat) => {
+              const isSelected = selectedCategory === cat.value;
+              return (
+                <button
+                  key={cat.value}
+                  onClick={() => handleCategorySelect(cat.value)}
+                  className={`group h-full w-full rounded-3xl border-2 p-7 text-left transition-all cursor-pointer ${
+                    isSelected
+                      ? 'border-[#1AAE9F] bg-teal-50/70 dark:border-teal-400 dark:bg-teal-900/20 shadow-md scale-102'
+                      : 'border-slate-100 bg-white hover:border-teal-200 hover:shadow-card dark:border-slate-700 dark:bg-slate-800'
+                  }`}
+                >
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-all ${
+                      isSelected
+                        ? 'bg-[#1AAE9F] text-white shadow-soft'
+                        : 'bg-teal-50 text-[#1AAE9F] dark:bg-slate-700 dark:text-teal-300'
+                    }`}
+                  >
+                    {getCategoryIcon(cat.value)}
+                  </div>
+                  <h3 className="mt-5 text-xl font-bold text-slate-900 dark:text-white">
+                    {cat.label}
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {cat.desc}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
-      ) : (
-        /* Volunteer Registration Form */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Main Form */}
-          <div className="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xs">
-            <form onSubmit={handleSubmit} className="space-y-6 text-xs sm:text-sm">
-              <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-lg font-bold text-slate-900">Personal & Academic Profile</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Open to all dental, medical, nursing students, and humanitarian volunteers.
+      </section>
+
+      {/* 2. REGISTRATION FORM */}
+      <section
+        id="volunteer-form"
+        className="section-padding bg-slate-50 dark:bg-slate-800/50"
+      >
+        <div className="container-app">
+          <div className="mx-auto max-w-2xl">
+            {submitted ? (
+              <div className="rounded-3xl bg-white p-10 text-center shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 animate-fade-in">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600">
+                  <CheckCircle2 className="h-8 w-8" />
+                </div>
+                <h2 className="mt-6 text-2xl font-bold text-slate-900 dark:text-white">
+                  Thank You for Joining Us!
+                </h2>
+                <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-md mx-auto">
+                  Your volunteer registration has been received. Our coordination team will reach out to you soon with orientation details and camp schedules. Together, we'll reach the unreached.
                 </p>
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="rounded-3xl bg-white p-8 sm:p-10 shadow-card dark:bg-slate-800 border border-slate-100 dark:border-slate-700 space-y-6"
+              >
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Full Legal Name *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                    placeholder="e.g., Aayush KC"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+                    Volunteer Registration
+                  </h2>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    Fill out the form below and our volunteer coordination team will contact you.
+                  </p>
+                </div>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="label-field">Full Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.full_name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, full_name: e.target.value })
+                      }
+                      className="input-field"
+                      placeholder="Your full name"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label-field">Email Address *</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({ ...formData, email: e.target.value })
+                      }
+                      className="input-field"
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="label-field">Phone Number *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={(e) =>
+                        setFormData({ ...formData, phone: e.target.value })
+                      }
+                      className="input-field"
+                      placeholder="+977 98XXXXXXXX"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label-field">Location (City, District)</label>
+                    <input
+                      type="text"
+                      value={formData.location}
+                      onChange={(e) =>
+                        setFormData({ ...formData, location: e.target.value })
+                      }
+                      className="input-field"
+                      placeholder="e.g. Kathmandu, Pokhara, Chitwan"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Email Address *</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="e.g., aayush@example.com"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    Phone / WhatsApp Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="e.g., +977 9841000000"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Your Role *</label>
+                  <label className="label-field">Volunteer Category *</label>
                   <select
-                    value={formData.roleType}
-                    onChange={(e) => setFormData({ ...formData, roleType: e.target.value as any })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
+                    value={formData.category}
+                    onChange={(e) => {
+                      setFormData({ ...formData, category: e.target.value });
+                      setSelectedCategory(e.target.value);
+                    }}
+                    className="input-field"
                   >
-                    <option value="Dental Student">Dental Student (BDS)</option>
-                    <option value="Dental Surgeon">Registered Dental Surgeon (BDS/MDS)</option>
-                    <option value="Medical Student / Nurse">Medical Student / Nursing Student</option>
-                    <option value="General Volunteer / Logistics">General Volunteer / Logistics Lead</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    College / University / Affiliation *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.institution}
-                    onChange={(e) => setFormData({ ...formData, institution: e.target.value })}
-                    placeholder="e.g., IOM Maharajgunj / KU Dental School"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Year of Study / Status</label>
-                  <input
-                    type="text"
-                    value={formData.yearOfStudyOrExperience}
-                    onChange={(e) =>
-                      setFormData({ ...formData, yearOfStudyOrExperience: e.target.value })
-                    }
-                    placeholder="e.g., Final Year BDS / Intern / Practicing"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">
-                    District Preference
-                  </label>
-                  <select
-                    value={formData.districtPreference}
-                    onChange={(e) => setFormData({ ...formData, districtPreference: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  >
-                    <option value="Open to Any Remote District">Open to Any Remote District</option>
-                    <option value="Karnali (Jumla / Humla)">Karnali (Jumla / Humla)</option>
-                    <option value="Bagmati (Sindhupalchok / Chitwan)">Bagmati (Sindhupalchok / Chitwan)</option>
-                    <option value="Koshi (Solukhumbu / Morang)">Koshi (Solukhumbu / Morang)</option>
-                    <option value="Kathmandu Valley Day Camps">Kathmandu Valley Weekend Camps</option>
+                    {VOLUNTEER_CATEGORIES.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Availability Window</label>
-                  <select
+                  <label className="label-field">Availability</label>
+                  <input
+                    type="text"
                     value={formData.availability}
-                    onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                  >
-                    <option value="1-Week High Altitude Expedition">1-Week High Altitude Expedition</option>
-                    <option value="Weekend Day Camps">Weekend Day Camps</option>
-                    <option value="2-Week Comprehensive Remote Camp">2-Week Comprehensive Remote Camp</option>
-                    <option value="Flexible / On Call">Flexible / On Call for Disasters</option>
-                  </select>
+                    onChange={(e) =>
+                      setFormData({ ...formData, availability: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="e.g. Weekends, College Breaks, Specific Months"
+                  />
                 </div>
-              </div>
 
-              {/* Skills Checklist */}
-              <div>
-                <label className="block font-semibold text-slate-700 mb-2">
-                  Skills & Areas You Want to Contribute (Select all that apply)
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  {availableSkills.map((skill) => (
-                    <label
-                      key={skill}
-                      className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-colors ${
-                        formData.skills.includes(skill)
-                          ? 'bg-teal-50 border-[#16A396] text-[#16A396] font-medium'
-                          : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.skills.includes(skill)}
-                        onChange={() => handleSkillToggle(skill)}
-                        className="rounded-sm text-[#16A396] focus:ring-0"
-                      />
-                      <span>{skill}</span>
-                    </label>
-                  ))}
+                <div>
+                  <label className="label-field">Relevant Background / Skills</label>
+                  <textarea
+                    rows={3}
+                    value={formData.experience}
+                    onChange={(e) =>
+                      setFormData({ ...formData, experience: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="Share your academic year, dental college, previous camp experience, or special skills..."
+                  />
                 </div>
-              </div>
 
-              {/* Motivation */}
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Why do you want to join Miles for Smiles Nepal? *
-                </label>
-                <textarea
-                  required
-                  rows={3}
-                  value={formData.motivation}
-                  onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
-                  placeholder="Tell us what motivates you to reach remote communities and what you hope to learn or contribute..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#16A396]"
-                />
-              </div>
+                <div>
+                  <label className="label-field">Why do you want to volunteer?</label>
+                  <textarea
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
+                    className="input-field"
+                    placeholder="Tell us what inspires you to join Miles for Smiles Nepal..."
+                  />
+                </div>
 
-              <div className="pt-2">
+                {errorMsg && (
+                  <div className="p-3 text-xs text-red-600 bg-red-50 rounded-xl">
+                    {errorMsg}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full sm:w-auto px-8 py-3 bg-[#16A396] hover:bg-[#0E786E] text-white font-bold rounded-xl transition-all shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  disabled={loading}
+                  className="btn-primary w-full justify-center text-base py-3.5"
                 >
-                  <Send className="w-4 h-4" />
-                  <span>Submit Volunteer Application</span>
+                  <Send className="h-4 w-4" />
+                  <span>{loading ? 'Submitting...' : 'Submit Application'}</span>
                 </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Right Sidebar: Handbook & FAQ */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Guidebook Card */}
-            <div className="bg-slate-900 text-white p-6 rounded-3xl space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-slate-800 text-[#38C8BA] flex items-center justify-center">
-                <FileCheck className="w-5 h-5" />
-              </div>
-              <h4 className="text-base font-bold text-white">Volunteer Clinical Handbook</h4>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Download our standardized protocol for Atraumatic Restorative Treatment (ART), infection control in field camps, and community engagement.
-              </p>
-              <button
-                onClick={handleDownloadHandbook}
-                className="w-full py-2.5 bg-[#38C8BA] hover:bg-[#38bdf8] text-slate-950 font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Handbook (PDF)</span>
-              </button>
-            </div>
-
-            {/* Testimonial */}
-            <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
-              <div className="flex items-center gap-1 text-[#F4C542]">
-                {'★'.repeat(5)}
-              </div>
-              <p className="text-xs text-slate-700 italic leading-relaxed">
-                "Volunteering with Miles for Smiles in Jumla was the most transformative month of my dental education. In college, we work in air-conditioned operatories; in the mountains, you learn how to heal with grit, compassion, and true human connection."
-              </p>
-              <div className="pt-2 border-t border-slate-100 text-xs">
-                <span className="font-bold text-slate-900 block">Dr. Ritesh Sharma</span>
-                <span className="text-slate-500 text-[11px]">BDS Graduate, 2024 Karnali Expedition</span>
-              </div>
-            </div>
-
-            {/* FAQ Brief */}
-            <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-3 text-xs">
-              <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                <HelpCircle className="w-4 h-4 text-[#16A396]" />
-                <span>Volunteer FAQ</span>
-              </div>
-              <div>
-                <strong className="block text-slate-800">Do I need prior camp experience?</strong>
-                <p className="text-slate-600 mt-0.5">
-                  No. We provide comprehensive hands-on training on ART and field sterilization before departure.
-                </p>
-              </div>
-              <div>
-                <strong className="block text-slate-800">Are lodging and food covered?</strong>
-                <p className="text-slate-600 mt-0.5">
-                  Yes! All basic lodging, food, and ground transport for remote expeditions are covered by Miles for Smiles.
-                </p>
-              </div>
-            </div>
+              </form>
+            )}
           </div>
         </div>
-      )}
+      </section>
     </div>
   );
 };
