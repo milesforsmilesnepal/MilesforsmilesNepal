@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Miles for Smiles Nepal impact map, 2024 to 2026</title>
+  <desc id="desc">A branded map of Nepal showing the organisation's outreach locations and verified impact statistics.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18385c"/><stop offset=".48" stop-color="#7292c1"/><stop offset="1" stop-color="#d5e2f0"/></linearGradient>
+    <linearGradient id="hills" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8ca3c2"/><stop offset="1" stop-color="#385b72"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#071b35" flood-opacity=".3"/></filter>
+  </defs>
+  <rect width="1200" height="720" fill="url(#sky)"/>
+  <path d="M0 420 Q160 280 310 420 T610 390 T900 400 T1200 300 V720 H0Z" fill="url(#hills)" opacity=".78"/>
+  <path d="M0 540 Q160 420 330 545 T660 510 T950 520 T1200 455 V720 H0Z" fill="#294b5e" opacity=".88"/>
+  <g opacity=".2" fill="#f3f7fb"><path d="M35 145 150 40 230 145 315 58 400 155 520 48 625 160 740 62 860 160 990 48 1120 155 1200 88V0H0Z"/></g>
+  <g filter="url(#shadow)">
+    <path d="M178 210 255 168 350 180 433 206 517 198 601 224 674 250 754 260 839 286 926 300 1010 344 1033 401 982 440 900 448 823 466 741 457 668 446 592 431 510 418 430 400 347 378 273 347 212 302 205Z" fill="#f4f8fb" stroke="#c1d1e3" stroke-width="7"/>
+    <path d="M252 214 330 378M342 190 410 401M430 205 477 415M526 204 548 422M620 229 622 433M720 258 694 452M818 278 774 459M908 306 853 450M303 285 930 355M277 340 895 407" fill="none" stroke="#b7c9dd" stroke-width="3" opacity=".9"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="#fff">
+    <text x="600" y="58" text-anchor="middle" font-size="29" font-weight="700">Miles for Smiles Nepal</text>
+    <text x="600" y="88" text-anchor="middle" font-size="17">Reaching the Unreached, One Smile at a Time</text>
+  </g>
+  <g font-family="Arial, sans-serif" font-weight="700" text-anchor="middle">
+    <g fill="#1aaE9f" stroke="#fff" stroke-width="4"><circle cx="335" cy="270" r="14"/><circle cx="485" cy="355" r="14"/><circle cx="583" cy="334" r="14"/><circle cx="656" cy="370" r="14"/><circle cx="715" cy="343" r="14"/><circle cx="770" cy="369" r="14"/><circle cx="842" cy="387" r="14"/><circle cx="900" cy="400" r="14"/><circle cx="940" cy="417" r="14"/><circle cx="598" cy="390" r="14"/><circle cx="728" cy="409" r="14"/><circle cx="404" cy="268" r="14"/><circle cx="925" cy="442" r="14"/></g>
+    <g fill="#0f514d" font-size="14"><text x="335" y="245">Jumla</text><text x="485" y="330">Lumbini</text><text x="583" y="309">Pokhara</text><text x="656" y="345">Kavre</text><text x="715" y="318">Kathmandu</text><text x="770" y="344">Sundarijal</text><text x="842" y="362">Janakpur</text><text x="900" y="375">Birgunj</text><text x="940" y="392">Nawalparasi</text><text x="598" y="415">Namobuddha</text><text x="728" y="434">Nagarkot</text><text x="404" y="293">Karnali</text><text x="925" y="467">Salinadi</text></g>
+  </g>
+  <g font-family="Arial, sans-serif" fill="#fff">
+    <rect x="45" y="500" width="440" height="168" rx="20" fill="#0c263f" fill-opacity=".82"/>
+    <text x="75" y="540" font-size="20" font-weight="700">Verified impact, 2024–2026</text>
+    <text x="75" y="575" font-size="18">Patients served: <tspan fill="#f4c542" font-weight="700">6,486</tspan></text>
+    <text x="75" y="605" font-size="18">Preventive treatments: <tspan fill="#f4c542" font-weight="700">689</tspan></text>
+    <text x="75" y="635" font-size="18">Extractions: <tspan fill="#f4c542" font-weight="700">154</tspan></text>
+  </g>
+  <g font-family="Arial, sans-serif" text-anchor="middle">
+    <rect x="845" y="105" width="300" height="115" rx="18" fill="#fff" fill-opacity=".94"/>
+    <text x="995" y="142" font-size="17" fill="#0f514d" font-weight="700">OUR REACH</text>
+    <text x="920" y="181" font-size="26" fill="#1aae9f" font-weight="800">13</text><text x="920" y="202" font-size="12" fill="#3c566b">Districts</text>
+    <text x="995" y="181" font-size="26" fill="#1aae9f" font-weight="800">16</text><text x="995" y="202" font-size="12" fill="#3c566b">Dental camps</text>
+    <text x="1070" y="181" font-size="26" fill="#1aae9f" font-weight="800">6,486</text><text x="1070" y="202" font-size="12" fill="#3c566b">Patients</text>
+  </g>
+  <rect x="0" y="690" width="1200" height="30" fill="#1aae9f"/>
+</svg>

@@ -8,12 +8,14 @@ import {
   NewsArticle,
 } from '../types';
 
-export const HERO_IMAGE = '/src/assets/images/hero_miles_for_smiles_1790483464777.jpg';
-export const KARNALI_IMAGE = '/src/assets/images/dental_camp_karnali_1790483480016.jpg';
-export const SCHOOL_EDU_IMAGE = '/src/assets/images/school_oral_education_1790483495471.jpg';
-export const MENSTRUAL_IMAGE = '/src/assets/images/menstrual_hygiene_session_1790483508339.jpg';
-export const STORY_PORTRAIT_IMAGE = '/src/assets/images/human_story_portrait_1790483520243.jpg';
-export const MFSN_LOGO_IMAGE = '/mfsn_logo.jpg';
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+
+export const HERO_IMAGE = `${base}images/hero_miles_for_smiles_1790483464777.jpg`;
+export const KARNALI_IMAGE = `${base}images/dental_camp_karnali_1790483480016.jpg`;
+export const SCHOOL_EDU_IMAGE = `${base}images/school_oral_education_1790483495471.jpg`;
+export const MENSTRUAL_IMAGE = `${base}images/menstrual_hygiene_session_1790483508339.jpg`;
+export const STORY_PORTRAIT_IMAGE = `${base}images/human_story_portrait_1790483520243.jpg`;
+export const MFSN_LOGO_IMAGE = `${base}images/mfsn_logo.jpg`;
 export const MFSN_BRAND_COLOR = '#16A396';
 export const MFSN_BRAND_DARK = '#0E786E';
 
@@ -57,7 +59,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"I had severe tooth pain for six months that made it hard to study. The dental doctors treated my tooth without any hurt and gave me my very first toothbrush and mint paste. Now I smile without pain!"',
     },
-    coordinates: { x: 340, y: 190 },
+    coordinates: { x: 252, y: 151 },
   },
   {
     id: 'humla',
@@ -86,7 +88,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"In Humla, getting dental care means flying to Nepalgunj, which 99% of our families cannot afford. Miles for Smiles brought high-standard dental care right to our schoolyard."',
     },
-    coordinates: { x: 260, y: 120 },
+    coordinates: { x: 224, y: 76 },
   },
   {
     id: 'sindhupalchok',
@@ -115,7 +117,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"The menstrual health session cleared so many taboos we held quietly. And getting my teeth cleaned made me want to study biology to become a healthcare worker myself."',
     },
-    coordinates: { x: 570, y: 310 },
+    coordinates: { x: 609, y: 286 },
   },
   {
     id: 'kathmandu',
@@ -144,7 +146,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"We move often with our parents and never visited a hospital. The doctors checked all of us, gave us toothbrushes and taught us how to keep our gums healthy."',
     },
-    coordinates: { x: 535, y: 340 },
+    coordinates: { x: 570, y: 310 },
   },
   {
     id: 'chitwan',
@@ -173,7 +175,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"These energetic young dental students walked 4 hours uphill carrying medicines to reach our settlement. Their dedication has left an indelible mark in our hearts."',
     },
-    coordinates: { x: 470, y: 380 },
+    coordinates: { x: 475, y: 342 },
   },
   {
     id: 'solukhumbu',
@@ -202,7 +204,7 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"The children were suffering from cavities caused by packaged candies. Miles for Smiles not only cured their cavities but gave every student the knowledge to protect their teeth."',
     },
-    coordinates: { x: 670, y: 330 },
+    coordinates: { x: 710, y: 322 },
   },
   {
     id: 'morang',
@@ -231,7 +233,203 @@ export const DISTRICTS_DATA: DistrictImpact[] = [
       quote:
         '"After our settlement was flooded, our health post was submerged. Miles for Smiles brought medicines, dental relief, and hygiene supplies right when we needed them most."',
     },
-    coordinates: { x: 740, y: 410 },
+    coordinates: { x: 775, y: 432 },
+  },
+  {
+    id: 'kailali',
+    name: 'Kailali',
+    nepaliName: 'कैलाली',
+    province: 'Sudurpashchim Province',
+    provinceNo: 7,
+    studentsReached: 650,
+    freeDentalTreatments: 140,
+    hygieneKitsDistributed: 1800,
+    schoolsVisited: 5,
+    terrain: 'Terai',
+    lastCampDate: 'October 2025',
+    photo: HERO_IMAGE,
+    activities: [
+      'Tharu indigenous community oral screening',
+      'Primary tooth atraumatic restorations',
+      'Hygiene kit distribution in rural Dhangadhi schools',
+    ],
+    summary:
+      'Outreach targeting marginalized agricultural worker communities in the Far-Western Terai border.',
+    story: {
+      title: 'Far-West Smiles',
+      beneficiary: 'Bikram Chaudhary, Farmer',
+      quote:
+        '"We never had dental doctors visit our village school before. My daughter received her first dental checkup and tooth kit."',
+    },
+    coordinates: { x: 117, y: 208 },
+  },
+  {
+    id: 'mustang',
+    name: 'Mustang',
+    nepaliName: 'मुस्ताङ',
+    province: 'Gandaki Province',
+    provinceNo: 4,
+    studentsReached: 480,
+    freeDentalTreatments: 95,
+    hygieneKitsDistributed: 1200,
+    schoolsVisited: 4,
+    terrain: 'Mountain',
+    lastCampDate: 'June 2025',
+    photo: KARNALI_IMAGE,
+    activities: [
+      'Monastery & nunnery oral hygiene workshops',
+      'Fluoride varnish treatment in high wind environments',
+      'Cold-weather lip and oral lesion clinical care',
+    ],
+    summary:
+      'Trans-Himalayan plateau camp serving monks, nuns, and local Tibetan-origin mountain youth in Jomsom and Muktinath.',
+    story: {
+      title: 'Smiles in the Trans-Himalayas',
+      beneficiary: 'Tashi Norbu, Young Monk',
+      quote:
+        '"The doctors came all the way to our gompa and showed us gentle brushing techniques and treated my tooth ache."',
+    },
+    coordinates: { x: 424, y: 179 },
+  },
+  {
+    id: 'pokhara',
+    name: 'Kaski (Pokhara)',
+    nepaliName: 'कास्की (पोखरा)',
+    province: 'Gandaki Province',
+    provinceNo: 4,
+    studentsReached: 1100,
+    freeDentalTreatments: 240,
+    hygieneKitsDistributed: 2500,
+    schoolsVisited: 7,
+    terrain: 'Hill',
+    lastCampDate: 'December 2025',
+    photo: SCHOOL_EDU_IMAGE,
+    activities: [
+      'Rural Annapurna foothill school checkups',
+      'Oral health educational rally with dental college interns',
+      'Fluoride gel tray application',
+    ],
+    summary:
+      'Community programs reaching rural settlements on the outskirts of Pokhara valley and Annapurna base villages.',
+    story: {
+      title: 'Under the Annapurna Peaks',
+      beneficiary: 'Laxmi Gurung, Grade 7',
+      quote:
+        '"I used to think bleeding gums were normal until the doctors explained hygiene and gave us soft-bristle brushes."',
+    },
+    coordinates: { x: 436, y: 259 },
+  },
+  {
+    id: 'nawalparasi',
+    name: 'Nawalparasi',
+    nepaliName: 'नवलपरासी',
+    province: 'Lumbini Province',
+    provinceNo: 5,
+    studentsReached: 820,
+    freeDentalTreatments: 180,
+    hygieneKitsDistributed: 2100,
+    schoolsVisited: 6,
+    terrain: 'Terai',
+    lastCampDate: 'August 2025',
+    photo: MENSTRUAL_IMAGE,
+    activities: [
+      'Flood-affected river basin medical and dental clinic',
+      'School oral health brushing competitions',
+      'Sanitary hygiene pads distribution',
+    ],
+    summary:
+      'Humanitarian medical and oral relief for flood-prone rural settlements along the Narayani river.',
+    story: {
+      title: 'Restoring Smiles Along the Narayani',
+      beneficiary: 'Sita BK, Mother of two',
+      quote:
+        '"The monsoon disrupted everything, but Miles for Smiles arrived with medicines and relief that brought peace of mind."',
+    },
+    coordinates: { x: 403, y: 329 },
+  },
+  {
+    id: 'saptari',
+    name: 'Saptari',
+    nepaliName: 'सप्तरी',
+    province: 'Madhesh Province',
+    provinceNo: 2,
+    studentsReached: 890,
+    freeDentalTreatments: 190,
+    hygieneKitsDistributed: 2600,
+    schoolsVisited: 7,
+    terrain: 'Terai',
+    lastCampDate: 'September 2025',
+    photo: KARNALI_IMAGE,
+    activities: [
+      'Dalit and Musahar marginalized settlement camps',
+      'Emergency extractions and ART restorations',
+      'Community-wide tooth brushing workshops in Maithili',
+    ],
+    summary:
+      'Grassroots outreach targeting historically underserved communities in the southern plains with culturally adapted health education in Maithili.',
+    story: {
+      title: 'Dignity for Musahar Communities',
+      beneficiary: 'Ram Lal Sada, Community Elder',
+      quote:
+        '"Doctors rarely come to our settlement. The Miles for Smiles team treated our children with utmost respect and gentleness."',
+    },
+    coordinates: { x: 715, y: 425 },
+  },
+  {
+    id: 'kavre',
+    name: 'Kavrepalanchok',
+    nepaliName: 'काभ्रेपलाञ्चोक',
+    province: 'Bagmati Province',
+    provinceNo: 3,
+    studentsReached: 950,
+    freeDentalTreatments: 210,
+    hygieneKitsDistributed: 2400,
+    schoolsVisited: 7,
+    terrain: 'Hill',
+    lastCampDate: 'March 2025',
+    photo: SCHOOL_EDU_IMAGE,
+    activities: [
+      'Dhulikhel & Namobuddha community outreach',
+      'Fissure sealants and pediatric preventive varnishes',
+      'Teacher training on school health maintenance',
+    ],
+    summary:
+      'Hilly district program combining clinical restorative interventions with school teacher oral health training.',
+    story: {
+      title: 'Training Teachers as Oral Champions',
+      beneficiary: 'Gopal Sapkota, School Principal',
+      quote:
+        '"Now our teachers conduct daily tooth-brushing checks. The program created a permanent positive habit among our students."',
+    },
+    coordinates: { x: 594, y: 329 },
+  },
+  {
+    id: 'mugu',
+    name: 'Mugu',
+    nepaliName: 'मुगु',
+    province: 'Karnali Province',
+    provinceNo: 6,
+    studentsReached: 580,
+    freeDentalTreatments: 130,
+    hygieneKitsDistributed: 1400,
+    schoolsVisited: 4,
+    terrain: 'Mountain',
+    lastCampDate: 'May 2025',
+    photo: KARNALI_IMAGE,
+    activities: [
+      'Rara lake periphery remote settlement clinics',
+      'Atraumatic Restorative Treatment',
+      'Distribution of warm oral care packs',
+    ],
+    summary:
+      'Reaching high-altitude villages around Rara where severe winters and isolated trails cut communities off from clinical care.',
+    story: {
+      title: 'Hope in the Remote Highlands',
+      beneficiary: 'Karma Lama, Village Elder',
+      quote:
+        '"Our children had never seen dental instruments. Seeing them smile without toothache is the greatest gift."',
+    },
+    coordinates: { x: 251, y: 102 },
   },
 ];
 

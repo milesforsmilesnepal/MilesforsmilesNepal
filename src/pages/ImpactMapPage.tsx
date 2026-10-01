@@ -22,14 +22,14 @@ export const ImpactMapPage: React.FC<ImpactMapPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+    <div className="pt-28 pb-16 sm:pt-32 sm:pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
       {/* Page Title */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100">
+        <div className="inline-flex items-center gap-2 text-xs font-bold text-[#16A396] uppercase tracking-widest bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-100 shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-[#F4C542]" />
           <span>Geographic Impact Atlas · भौगोलिक प्रभाव</span>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight font-display">
           Interactive Nepal Impact Map
         </h1>
         <p className="text-sm sm:text-base text-slate-600 font-nepali">

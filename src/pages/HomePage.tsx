@@ -40,11 +40,22 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-// Helper coordinate mapping matching Bolt's JE(lat, lng) function
+const NEPAL_AUTHENTIC_PATH = "M 854.8 292.5 L 858.9 295.3 L 859.3 300.0 L 858.5 305.1 L 854.3 316.3 L 850.5 324.1 L 846.1 340.6 L 842.1 369.3 L 843.0 374.3 L 854.9 390.7 L 859.6 403.4 L 860.0 412.0 L 854.9 426.4 L 849.2 442.7 L 846.4 446.4 L 843.2 447.7 L 828.4 442.0 L 818.3 442.8 L 806.6 446.0 L 794.4 445.3 L 784.4 443.5 L 771.6 450.0 L 759.4 446.5 L 751.6 442.4 L 746.4 431.1 L 744.2 429.7 L 718.5 441.5 L 712.4 442.2 L 696.4 435.8 L 683.4 429.6 L 678.5 427.7 L 665.9 425.2 L 654.5 423.8 L 642.2 419.9 L 626.9 425.0 L 620.7 424.6 L 614.9 420.9 L 611.9 413.3 L 611.1 406.1 L 605.9 401.1 L 597.8 400.0 L 586.5 404.4 L 570.0 410.3 L 564.6 409.3 L 559.7 407.6 L 557.9 406.1 L 555.7 399.3 L 553.0 397.8 L 549.2 397.6 L 542.4 396.0 L 534.0 390.9 L 508.5 379.0 L 505.3 373.7 L 505.4 362.0 L 504.0 357.2 L 500.9 352.1 L 487.8 347.0 L 462.5 338.7 L 448.4 332.0 L 441.7 335.1 L 428.8 337.9 L 421.9 343.9 L 413.6 342.0 L 393.9 335.7 L 383.3 334.8 L 376.9 336.9 L 375.5 340.5 L 367.4 344.6 L 359.7 341.3 L 344.6 336.9 L 331.3 334.5 L 311.2 329.2 L 308.9 321.1 L 305.5 313.1 L 300.7 311.6 L 282.6 313.2 L 266.1 304.4 L 248.3 293.1 L 240.7 289.4 L 235.8 288.0 L 231.5 289.5 L 226.6 292.1 L 222.1 292.9 L 212.5 288.0 L 200.1 281.0 L 185.0 272.5 L 167.3 260.6 L 160.1 253.9 L 156.7 248.8 L 153.0 244.1 L 137.6 236.3 L 125.4 230.1 L 110.7 222.7 L 108.2 221.2 L 102.7 216.8 L 94.1 211.2 L 87.1 209.6 L 84.9 212.7 L 83.2 215.9 L 77.1 215.2 L 67.6 209.5 L 57.7 203.6 L 49.9 198.1 L 41.9 192.4 L 40.0 188.2 L 43.3 175.3 L 48.0 164.2 L 51.9 161.7 L 58.3 154.4 L 60.7 141.5 L 60.5 130.6 L 66.8 115.0 L 75.4 98.5 L 90.3 80.9 L 96.7 75.0 L 103.9 71.0 L 117.7 58.0 L 120.5 55.8 L 126.5 52.5 L 132.5 51.6 L 136.9 53.3 L 141.5 60.1 L 147.0 66.6 L 153.8 66.3 L 161.7 60.7 L 178.1 35.2 L 200.8 30.0 L 222.3 32.6 L 241.4 36.3 L 247.0 44.9 L 250.7 53.8 L 253.1 58.4 L 259.3 63.8 L 286.2 76.5 L 301.8 88.0 L 323.4 103.4 L 339.5 110.2 L 353.8 110.8 L 361.9 116.9 L 374.0 128.9 L 384.3 142.8 L 397.1 155.6 L 406.0 155.1 L 418.0 151.0 L 432.7 145.6 L 441.4 148.2 L 449.5 151.8 L 452.1 158.4 L 457.0 170.9 L 462.3 183.9 L 470.8 188.5 L 480.8 195.2 L 486.3 200.5 L 505.0 210.2 L 507.7 214.2 L 511.4 216.9 L 516.0 218.6 L 519.8 220.6 L 525.7 221.3 L 547.3 215.4 L 553.1 216.1 L 556.4 217.2 L 556.5 219.4 L 552.6 228.5 L 549.3 240.2 L 552.7 246.0 L 561.8 248.5 L 581.9 250.2 L 608.9 250.1 L 617.1 256.0 L 625.3 264.9 L 633.5 280.1 L 636.8 286.5 L 640.9 288.3 L 647.9 285.8 L 649.1 279.6 L 649.4 270.3 L 655.3 267.1 L 659.1 269.4 L 663.5 276.7 L 674.7 283.2 L 682.8 286.4 L 690.5 285.3 L 693.7 282.8 L 697.5 270.1 L 703.6 268.2 L 711.3 269.1 L 714.2 271.6 L 717.3 276.7 L 726.6 279.1 L 735.9 282.3 L 744.6 286.4 L 756.9 295.9 L 772.0 297.6 L 789.5 297.4 L 798.7 297.6 L 805.5 298.3 L 811.6 297.6 L 829.6 290.9 L 836.9 290.4 L 846.0 291.2 L 854.8 292.5 Z";
+
+// Helper coordinate mapping projecting real lat/lng onto the authentic 900x480 SVG
 function projectCoordinates(lat: number, lng: number) {
-  const x = ((lng - 79.5) / 9) * 100;
-  const y = ((30.5 - lat) / (30.5 - 25.5)) * 100;
-  return { x, y };
+  const min_lon = 80.088425;
+  const max_lon = 88.174804;
+  const min_lat = 26.347;
+  const max_lat = 30.447;
+  const width = 820;
+  const height = 420;
+  const margin_x = 40;
+  const margin_y = 30;
+
+  const x = margin_x + ((lng - min_lon) / (max_lon - min_lon)) * width;
+  const y = margin_y + ((max_lat - lat) / (max_lat - min_lat)) * height;
+  return { x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10 };
 }
 
 export const HomePage: React.FC = () => {
@@ -402,14 +413,32 @@ export const HomePage: React.FC = () => {
             <div className="lg:col-span-3 rounded-3xl bg-gradient-to-br from-teal-50/70 to-sky-50/50 p-6 shadow-card dark:from-slate-800 dark:to-slate-700 border border-teal-100 dark:border-slate-600 relative overflow-hidden">
               <div className="relative aspect-[4/3] w-full">
                 <svg
-                  viewBox="0 0 100 75"
+                  viewBox="0 0 900 480"
                   className="h-full w-full"
-                  style={{ filter: 'drop-shadow(0 4px 12px rgba(26,174,159,0.15))' }}
+                  style={{ filter: 'drop-shadow(0 6px 16px rgba(26,174,159,0.15))' }}
                 >
-                  {/* Stylized Nepal Map outline from Bolt */}
+                  <defs>
+                    <linearGradient id="homeNepalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#FFFFFF" />
+                      <stop offset="100%" stopColor="#E6F5F3" />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Authentic 50m Nepal Map Outline */}
                   <path
-                    d="M 8,15 L 15,8 L 25,6 L 35,10 L 45,7 L 55,5 L 62,9 L 70,6 L 78,10 L 85,8 L 90,15 L 92,25 L 88,35 L 90,45 L 85,55 L 80,60 L 70,62 L 60,58 L 50,62 L 40,60 L 30,58 L 22,55 L 15,50 L 10,42 L 8,35 L 6,25 Z"
-                    className="fill-white stroke-teal-200 stroke-1 dark:fill-slate-700 dark:stroke-slate-600 transition-colors"
+                    d={NEPAL_AUTHENTIC_PATH}
+                    fill="url(#homeNepalGrad)"
+                    stroke="#1AAE9F"
+                    strokeWidth="2.5"
+                    strokeLinejoin="round"
+                    className="dark:fill-slate-700 dark:stroke-teal-400 transition-colors"
+                  />
+
+                  {/* High Himalayan Northern Crest Ridge */}
+                  <path
+                    d="M 120 56 Q 240 40, 360 115 T 620 250 T 840 291 L 846 320 Q 640 270, 420 160 T 160 62 Z"
+                    fill="#38BDF8"
+                    opacity="0.25"
                   />
 
                   {/* Interactive Districts */}
@@ -427,26 +456,28 @@ export const HomePage: React.FC = () => {
                           <circle
                             cx={x}
                             cy={y}
-                            r="4.5"
+                            r="20"
                             className="fill-[#F4C542]/40 animate-ping"
                           />
                         )}
                         <circle
                           cx={x}
                           cy={y}
-                          r={isSelected ? '2.8' : '1.8'}
+                          r={isSelected ? 11 : 6.5}
                           className={
                             isSelected
-                              ? 'fill-[#F4C542] stroke-white stroke-[0.4]'
-                              : 'fill-[#1AAE9F] hover:fill-[#2dd4bf] stroke-white stroke-[0.3]'
+                              ? 'fill-[#F4C542] stroke-white stroke-2 shadow-sm'
+                              : 'fill-[#1AAE9F] hover:fill-[#2dd4bf] stroke-white stroke-[1.5]'
                           }
                           style={{ transition: 'all 0.3s' }}
                         />
                         <text
                           x={x}
-                          y={y - 3.2}
+                          y={y - 12}
                           textAnchor="middle"
-                          className="fill-slate-800 text-[2.6px] font-bold dark:fill-slate-200 select-none pointer-events-none"
+                          fontSize={isSelected ? '12' : '10.5'}
+                          fontWeight={isSelected ? '800' : '700'}
+                          className="fill-slate-800 dark:fill-slate-100 select-none pointer-events-none drop-shadow-sm"
                         >
                           {dist.name}
                         </text>
