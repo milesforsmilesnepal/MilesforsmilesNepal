@@ -70,6 +70,7 @@ export const GalleryPage: React.FC = () => {
                 <img
                   src={item.image_url}
                   alt={item.title || 'Field Photo'}
+                  referrerPolicy="no-referrer"
                   className="w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   style={{
                     aspectRatio:

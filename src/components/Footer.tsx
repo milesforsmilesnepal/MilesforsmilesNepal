@@ -150,6 +150,16 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/impact-map" className="text-slate-300 hover:text-white transition-colors">
+                  Interactive Impact Map
+                </Link>
+              </li>
+              <li>
+                <Link to="/news" className="text-slate-300 hover:text-white transition-colors">
+                  News & Field Dispatches
+                </Link>
+              </li>
+              <li>
                 <Link to="/gallery" className="text-slate-300 hover:text-white transition-colors">
                   Field Photo Gallery
                 </Link>

@@ -81,6 +81,7 @@ export const ProjectsPage: React.FC = () => {
                     <img
                       src={proj.cover_image}
                       alt={proj.title}
+                      referrerPolicy="no-referrer"
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />

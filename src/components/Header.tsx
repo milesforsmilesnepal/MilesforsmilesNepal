@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { label: 'Home', to: '/' },
   { label: 'About', to: '/about' },
   { label: 'Projects', to: '/projects' },
+  { label: 'Impact Map', to: '/impact-map' },
   { label: 'Gallery', to: '/gallery' },
   { label: 'Reports', to: '/reports' },
   { label: 'Volunteer', to: '/volunteer' },

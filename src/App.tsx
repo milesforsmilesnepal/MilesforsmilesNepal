@@ -18,6 +18,9 @@ import { DonatePage } from './pages/DonatePage';
 import { ContactPage } from './pages/ContactPage';
 import { BlogPage } from './pages/BlogPage';
 import { BlogDetailPage } from './pages/BlogDetailPage';
+import { ImpactMapPage } from './pages/ImpactMapPage';
+import { NewsPage } from './pages/NewsPage';
+import { SponsorsPage } from './pages/SponsorsPage';
 
 export default function App() {
   return (
@@ -32,10 +35,13 @@ export default function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/projects" element={<ProjectsPage />} />
               <Route path="/projects/:slug" element={<ProjectDetailPage />} />
+              <Route path="/impact-map" element={<ImpactMapPage />} />
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/volunteer" element={<VolunteerPage />} />
               <Route path="/partner" element={<PartnerPage />} />
+              <Route path="/sponsors" element={<SponsorsPage />} />
+              <Route path="/news" element={<NewsPage />} />
               <Route path="/donate" element={<DonatePage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />

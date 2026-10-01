@@ -95,6 +95,7 @@ export const AboutPage: React.FC = () => {
               <img
                 src="https://images.pexels.com/photos/7074250/pexels-photo-7074250.jpeg?auto=compress&cs=tinysrgb&w=800"
                 alt="Dental outreach in Nepal"
+                referrerPolicy="no-referrer"
                 className="w-full rounded-3xl object-cover shadow-card aspect-[4/3]"
               />
 

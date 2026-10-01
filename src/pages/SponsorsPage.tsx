@@ -4,7 +4,7 @@ import { PARTNERS_DATA } from '../data/organizationData';
 import { Building, Sparkles, CheckCircle2, ShieldCheck, Mail, Send, Check } from 'lucide-react';
 
 interface SponsorsPageProps {
-  onNavigate: (page: PageId) => void;
+  onNavigate?: (page: PageId | string) => void;
 }
 
 export const SponsorsPage: React.FC<SponsorsPageProps> = ({ onNavigate }) => {

@@ -1,7 +1,6 @@
 {
-  "name": "Miles for Smiles Nepal | मुस्कानको लागि पाइला नेपाल",
-  "description": "Youth-led nonprofit organization founded by dental students dedicated to improving oral health and healthcare access in underserved and remote communities across Nepal. Reach the Unreached.",
+  "name": "Miles for Smiles Nepal",
+  "description": "Youth-led nonprofit organization founded by dental students dedicated to oral health and healthcare access in remote communities across Nepal.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
-

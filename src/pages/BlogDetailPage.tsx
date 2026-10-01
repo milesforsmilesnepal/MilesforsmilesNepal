@@ -57,6 +57,7 @@ export const BlogDetailPage: React.FC = () => {
           <img
             src={post.cover_image}
             alt={post.title}
+            referrerPolicy="no-referrer"
             className="h-full w-full object-cover opacity-25"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-[#0f7069]/90 via-[#073936]/90 to-black/90" />

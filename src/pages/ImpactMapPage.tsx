@@ -1,15 +1,25 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageId, DistrictImpact } from '../types';
 import { DISTRICTS_DATA } from '../data/organizationData';
 import { NepalMap } from '../components/NepalMap';
 import { MapPin, Users, HeartPulse, Sparkles, Mountain, Calendar, ArrowRight, Heart } from 'lucide-react';
 
 interface ImpactMapPageProps {
-  onNavigate: (page: PageId) => void;
+  onNavigate?: (page: PageId | string) => void;
 }
 
 export const ImpactMapPage: React.FC<ImpactMapPageProps> = ({ onNavigate }) => {
+  const navigate = useNavigate();
   const [selectedDistrict, setSelectedDistrict] = useState<DistrictImpact>(DISTRICTS_DATA[0]);
+
+  const handleDonateNav = () => {
+    if (onNavigate) {
+      onNavigate('donate');
+    } else {
+      navigate('/donate');
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
@@ -31,7 +41,7 @@ export const ImpactMapPage: React.FC<ImpactMapPageProps> = ({ onNavigate }) => {
       <NepalMap
         selectedDistrictId={selectedDistrict.id}
         onSelectDistrict={(dist) => setSelectedDistrict(dist)}
-        onNavigateToDonate={() => onNavigate('donate')}
+        onNavigateToDonate={handleDonateNav}
       />
 
       {/* Province Directory Grid */}
