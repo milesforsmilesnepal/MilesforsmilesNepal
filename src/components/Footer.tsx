@@ -111,7 +111,7 @@ export const Footer: React.FC = () => {
               </div>
               <div>
                 <span className="font-devanagari text-base font-bold text-white block">
-                  मुस्कानको लागि पाइला नेपाल
+                  मुस्कानका लागि पाइला नेपाल
                 </span>
                 <span className="text-xs text-teal-300 font-semibold uppercase tracking-wider block">
                   Miles for Smiles Nepal

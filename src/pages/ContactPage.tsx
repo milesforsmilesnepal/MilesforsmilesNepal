@@ -86,10 +86,10 @@ export const ContactPage: React.FC = () => {
                   Email Us
                 </h3>
                 <a
-                  href="mailto:info@milesforsmilesnepal.org"
+                  href="mailto:milesforsmiles2026@gmail.com"
                   className="mt-2 block text-sm font-semibold text-[#1AAE9F] hover:text-[#0f7069] break-all"
                 >
-                  info@milesforsmilesnepal.org
+                  milesforsmiles2026@gmail.com
                 </a>
               </div>
 
@@ -101,10 +101,10 @@ export const ContactPage: React.FC = () => {
                   Call Us
                 </h3>
                 <a
-                  href="tel:+9779800000000"
+                  href="tel:+9779840569920"
                   className="mt-2 block text-sm font-semibold text-[#1AAE9F] hover:text-[#0f7069]"
                 >
-                  +977 9800000000
+                  +977 9840569920
                 </a>
               </div>
 
@@ -116,17 +116,17 @@ export const ContactPage: React.FC = () => {
                   Visit Us
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                  Kathmandu, Bagmati Province, Nepal
+                  Kathmandu, Nepal
                 </p>
               </div>
 
               <a
-                href="https://wa.me/9779800000000"
+                href="https://wa.me/9779840569920"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 rounded-3xl bg-[#25D366] p-6 font-bold text-white shadow-soft transition-all hover:bg-[#20ba5a]"
+                className="flex items-center justify-center gap-2.5 rounded-3xl bg-[#25D366] p-6 font-bold text-white shadow-soft transition-all hover:bg-[#20ba5a] hover:scale-[1.02] active:scale-[0.98] group"
               >
-                <MessageCircle className="h-6 w-6" />
+                <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
                 <span>Chat Directly on WhatsApp</span>
               </a>
 

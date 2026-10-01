@@ -64,7 +64,7 @@ export const Header: React.FC = () => {
 
             <div className="block">
               <div className="font-devanagari text-sm font-bold leading-tight text-[#0f7069] dark:text-[#2dd4bf]">
-                मुस्कानको लागि पाइला नेपाल
+                मुस्कानका लागि पाइला नेपाल
               </div>
               <div className="text-xs font-semibold leading-tight text-slate-600 dark:text-slate-400">
                 Miles for Smiles Nepal

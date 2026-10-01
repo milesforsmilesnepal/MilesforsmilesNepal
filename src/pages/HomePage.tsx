@@ -16,6 +16,7 @@ import {
   Story,
 } from '../data/boltData';
 import { SectionHeader } from '../components/SectionHeader';
+import { AnimatedCounter } from '../components/AnimatedCounter';
 import {
   Heart,
   Users,
@@ -35,6 +36,8 @@ import {
   Globe,
   CheckCircle2,
   ExternalLink,
+  HandHeart,
+  ShieldCheck,
 } from 'lucide-react';
 
 // Helper coordinate mapping matching Bolt's JE(lat, lng) function
@@ -181,30 +184,54 @@ export const HomePage: React.FC = () => {
 
             {/* Slide Content */}
             <div className="container-app relative flex h-full items-center">
-              <div className="max-w-2xl text-white pt-16">
-                <div className="inline-flex items-center gap-2 rounded-full bg-[#1AAE9F]/30 backdrop-blur-md px-4 py-1.5 text-xs sm:text-sm font-semibold text-teal-200 border border-teal-400/30 mb-6">
-                  <span className="font-devanagari">मुस्कानको लागि पाइला नेपाल</span>
-                  <span>·</span>
-                  <span>Reach the Unreached</span>
+              <div className="max-w-3xl text-white pt-16">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-4 py-2 text-xs sm:text-sm font-semibold text-[#F4C542] border border-white/15 mb-6 animate-fade-in-down shadow-sm">
+                  <span className="font-devanagari font-bold">मुस्कानका लागि पाइला नेपाल</span>
+                  <span className="text-slate-300">|</span>
+                  <span className="text-white">Reaching the Unreached</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight drop-shadow-md animate-fade-in-up font-display">
                   {slide.title}
                 </h1>
 
-                <p className="mt-6 text-lg sm:text-xl text-slate-200 leading-relaxed font-normal">
+                <p className="mt-6 text-lg sm:text-xl text-slate-200 leading-relaxed font-normal max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   {slide.subtitle}
                 </p>
 
-                <div className="mt-8 flex flex-wrap gap-4">
-                  <Link to="/projects" className="btn-primary">
-                    <span>Explore Our Projects</span>
-                    <ArrowRight className="h-4 w-4" />
+                <div className="mt-8 flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                  <Link to="/donate" className="btn-hope">
+                    <Heart className="h-5 w-5" fill="currentColor" />
+                    <span>Donate Now</span>
                   </Link>
 
-                  <Link to="/volunteer" className="btn-hope">
+                  <Link to="/volunteer" className="btn-dental">
+                    <Users className="h-5 w-5" />
                     <span>Join as Volunteer</span>
                   </Link>
+
+                  <Link to="/projects" className="btn-outline border-white text-white hover:bg-white/10">
+                    <span>Our Projects</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Floating Hero Badge */}
+              <div className="hidden xl:flex flex-col gap-3 absolute top-1/3 right-12 z-20 animate-float">
+                <div className="rounded-2xl bg-white/10 backdrop-blur-md p-5 border border-white/20 text-white shadow-2xl max-w-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-[#1AAE9F] flex items-center justify-center text-white shadow-soft">
+                      <Smile className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <div className="text-xs uppercase tracking-wider text-teal-300 font-semibold">100% Youth-Led</div>
+                      <div className="text-sm font-bold">Dental Student Initiative</div>
+                    </div>
+                  </div>
+                  <div className="mt-3 text-xs text-slate-200 leading-relaxed border-t border-white/10 pt-2.5">
+                    "Reaching the unreached, one smile at a time across remote Nepal."
+                  </div>
                 </div>
               </div>
             </div>
@@ -249,20 +276,20 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 2. IMPACT METRICS OVERLAY */}
+      {/* 2. IMPACT METRICS OVERLAY WITH ANIMATED COUNTER */}
       <section className="relative -mt-16 sm:-mt-20 z-20">
         <div className="container-app">
           <div className="grid grid-cols-2 gap-4 rounded-3xl bg-white p-6 sm:p-8 shadow-card dark:bg-slate-800 lg:grid-cols-5 border border-slate-100 dark:border-slate-700">
             {metrics.map((m) => (
               <div
                 key={m.id}
-                className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                className="flex flex-col items-center text-center p-3 sm:p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all hover:-translate-y-1 duration-300 group"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 dark:bg-teal-900/30 mb-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 dark:bg-teal-900/30 mb-3 group-hover:scale-110 transition-transform">
                   {getMetricIcon(m.icon)}
                 </div>
                 <div className="font-display text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                  {m.value.toLocaleString()}{m.suffix}
+                  <AnimatedCounter value={m.value} suffix={m.suffix} />
                 </div>
                 <div className="mt-1 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">
                   {m.label}
@@ -655,7 +682,51 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. CALL TO ACTION CARDS */}
+      {/* 8. SPONSORS & PARTNERS */}
+      <section className="section-padding bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+        <div className="container-app text-center">
+          <SectionHeader
+            eyebrow="Community & Institutional Backing"
+            title="Sponsors & Partners"
+            subtitle="We are grateful for the organizations and individuals who make our work across Nepal possible."
+          />
+
+          <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 items-center">
+            {[
+              { name: 'Nepal Dental Association (NDA)', role: 'Professional Partner' },
+              { name: 'Kantipur Dental College', role: 'Academic Clinical Partner' },
+              { name: 'Rotary International Nepal', role: 'Community Partner' },
+              { name: 'Karnali Rural Municipality', role: 'Local Government Host' },
+              { name: 'Lions Club District 325', role: 'Logistics Supporter' },
+              { name: 'Youth Red Cross Circle', role: 'Volunteer Outreach' },
+            ].map((p, idx) => (
+              <div
+                key={idx}
+                className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-soft hover:shadow-card hover:-translate-y-1 transition-all group"
+              >
+                <div className="h-10 w-10 rounded-xl bg-teal-50 dark:bg-teal-900/30 text-[#1AAE9F] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                  <Building className="h-5 w-5" />
+                </div>
+                <div className="text-xs font-bold text-slate-800 dark:text-slate-100 text-center line-clamp-2">
+                  {p.name}
+                </div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 text-center">
+                  {p.role}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <Link to="/partner" className="inline-flex items-center gap-2 text-sm font-bold text-[#1AAE9F] hover:text-[#0f7069] dark:hover:text-[#2dd4bf] transition-colors">
+              <span>Become an Institutional Partner</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. CALL TO ACTION CARDS */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#0f7069] via-[#148f84] to-[#073936] py-20 text-white">
         <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
 

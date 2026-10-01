@@ -100,8 +100,8 @@ export const AboutPage: React.FC = () => {
               />
 
               <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-[#0f7069] p-6 text-white shadow-lg md:block border border-teal-400/30">
-                <div className="font-display text-3xl font-extrabold text-[#F4C542]">5+</div>
-                <div className="text-xs font-semibold text-teal-100">Districts Served</div>
+                <div className="font-display text-3xl font-extrabold text-[#F4C542]">13+</div>
+                <div className="text-xs font-semibold text-teal-100">Districts Reached across Nepal</div>
               </div>
             </div>
           </div>
