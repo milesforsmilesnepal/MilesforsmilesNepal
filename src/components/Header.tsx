@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon, Menu, X, Heart } from 'lucide-react';
+import mfsnLogo from '../assets/images/mfsn_logo.jpg';
 
 const NAV_ITEMS = [
   { label: 'Home', to: '/' },
@@ -49,7 +50,7 @@ export const Header: React.FC = () => {
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative flex items-center justify-center overflow-hidden rounded-xl bg-[#1AAE9F] text-white shadow-soft h-11 w-11 transition-transform group-hover:scale-105">
               <img
-                src="/mfsn_logo.jpg"
+                src={mfsnLogo}
                 alt="MFSN"
                 className="w-full h-full object-cover"
                 onError={(e) => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import mfsnLogo from '../assets/images/mfsn_logo.jpg';
 import {
   Mail,
   Phone,
@@ -100,7 +101,7 @@ export const Footer: React.FC = () => {
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-[#1AAE9F] p-0.5 overflow-hidden shadow-soft flex items-center justify-center">
                 <img
-                  src="/mfsn_logo.jpg"
+                  src={mfsnLogo}
                   alt="MFSN"
                   className="w-full h-full object-cover rounded-lg"
                   onError={(e) => {

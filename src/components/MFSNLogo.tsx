@@ -1,10 +1,11 @@
 import React from 'react';
+import mfsnLogo from '../assets/images/mfsn_logo.jpg';
 
 export const MFSN_BRAND_COLOR = '#16A396';
 export const MFSN_BRAND_DARK = '#0E786E';
 export const MFSN_BRAND_LIGHT = '#38C8BA';
 export const MFSN_BRAND_BG_TINT = '#F0FDFA';
-export const MFSN_LOGO_IMAGE = '/mfsn_logo.jpg';
+export const MFSN_LOGO_IMAGE = mfsnLogo;
 
 interface MFSNLogoProps {
   variant?: 'badge' | 'horizontal' | 'mark' | 'full';

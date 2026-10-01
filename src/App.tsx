@@ -25,7 +25,7 @@ import { SponsorsPage } from './pages/SponsorsPage';
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <ScrollToTop />
         <div className="flex min-h-screen flex-col bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors">
           <Header />
